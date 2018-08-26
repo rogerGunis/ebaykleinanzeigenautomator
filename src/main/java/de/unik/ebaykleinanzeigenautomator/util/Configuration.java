@@ -6,7 +6,7 @@ import org.aeonbits.owner.Config.LoadType;
 import org.aeonbits.owner.Config.Sources;
 
 @LoadPolicy(LoadType.MERGE)
-@Sources({ "file:project.properties" })
+@Sources({ "file:config/project.properties", "file:config/credentials.properties" })
 public interface Configuration extends Config
 {
 	@Key("site.domain")

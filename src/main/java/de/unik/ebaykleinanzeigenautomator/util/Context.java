@@ -8,14 +8,17 @@ public class Context
 	
 	private Configuration configuration = null;
 	
-	private long sessionIdentifier;
+	private Long sessionIdentifier = null;
 	
 	private Context()
 	{
-		configuration = ConfigFactory.create(Configuration.class);
+		configuration = ConfigFactory.create(Configuration.class, System.getProperties(), System.getenv());
 		sessionIdentifier = System.currentTimeMillis();
-		
-		initializeSelenide();
+	}
+	
+	public static void initialize()
+	{
+		get().initializeSelenide();
 	}
 	
 	public static Context get()

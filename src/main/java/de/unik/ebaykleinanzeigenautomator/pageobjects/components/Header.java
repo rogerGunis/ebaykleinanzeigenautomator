@@ -9,6 +9,7 @@ import com.codeborne.selenide.SelenideElement;
 import de.unik.ebaykleinanzeigenautomator.pageobjects.Component;
 import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.Homepage;
 import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.LoginPage;
+import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.LogoutPage;
 
 public class Header extends Component
 {
@@ -36,13 +37,13 @@ public class Header extends Component
 		return new LoginPage();
 	}
 	
-	public Homepage logout()
+	public LogoutPage clickLogout()
 	{
 		logoutLink.shouldBe(visible).scrollTo().click();
 		
 		validateIsLoggedOut();
 		
-		return new Homepage();
+		return new LogoutPage();
 	}
 	
 	public void validateIsLoggedIn()

@@ -8,11 +8,6 @@ import de.unik.ebaykleinanzeigenautomator.util.Context;
 
 public class LoginPage extends BrowsingPage
 {
-	public LoginPage()
-	{
-		validateIsExpectedPage();
-	}
-	
 	@Override
 	public void validateIsExpectedPage()
 	{
