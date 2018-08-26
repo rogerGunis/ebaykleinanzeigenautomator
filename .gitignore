@@ -1,0 +1,14 @@
+/reports/
+/classes/
+/target/
+bin/
+
+.idea/
+
+.classpath
+.project
+.settings
+.settings/org.eclipse.core.resources.prefs
+.settings/org.eclipse.m2e.core.prefs
+
+config/credentials.properties
