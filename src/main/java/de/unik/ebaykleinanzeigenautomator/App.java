@@ -1,11 +1,8 @@
 package de.unik.ebaykleinanzeigenautomator;
 
-import com.codeborne.selenide.Selenide;
-
 import de.unik.ebaykleinanzeigenautomator.flows.OpenHomepageFlow;
 import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.Homepage;
 import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.LoginPage;
-import de.unik.ebaykleinanzeigenautomator.util.Context;
 
 public class App 
 {
