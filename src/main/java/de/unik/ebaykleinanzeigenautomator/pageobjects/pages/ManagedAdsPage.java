@@ -61,7 +61,7 @@ public class ManagedAdsPage extends BrowsingPage
 		
 		if(itemCount == 0)
 		{
-			System.out.println("No small ads found for account '" + Context.get().getConfiguration().accountUsername() + "'");
+			System.out.println("No small ads found for account '" + Context.get().getAccount().username + "'");
 		}
 	}
 	

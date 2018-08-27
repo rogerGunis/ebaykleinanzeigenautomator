@@ -18,8 +18,8 @@ public class LoginPage extends BrowsingPage
 	
 	public void fillLoginDetails()
 	{
-		$("#login-email").shouldBe(visible).scrollTo().val(Context.get().getConfiguration().accountUsername());
-		$("#login-password").shouldBe(visible).scrollTo().val(Context.get().getConfiguration().accountPassword());
+		$("#login-email").shouldBe(visible).scrollTo().val(Context.get().getAccount().username);
+		$("#login-password").shouldBe(visible).scrollTo().val(Context.get().getAccount().password);
 	}
 	
 	public Homepage clickLogin()

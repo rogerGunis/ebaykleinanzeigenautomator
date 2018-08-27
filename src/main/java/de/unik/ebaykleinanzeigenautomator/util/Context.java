@@ -2,6 +2,8 @@ package de.unik.ebaykleinanzeigenautomator.util;
 
 import org.aeonbits.owner.ConfigFactory;
 
+import de.unik.ebaykleinanzeigenautomator.models.Account;
+
 public class Context
 {
 	private static Context context = null;
@@ -9,6 +11,8 @@ public class Context
 	private Configuration configuration = null;
 	
 	private Long sessionIdentifier = null;
+	
+	private Account account = null;
 	
 	private Context()
 	{
@@ -19,6 +23,7 @@ public class Context
 	public static void initialize()
 	{
 		get().initializeSelenide();
+		get().account = new Account();
 	}
 	
 	public static Context get()
@@ -75,6 +80,17 @@ public class Context
 	public long getSessionIdentifier()
 	{
 		return sessionIdentifier;
+	}
+	
+	public void setAccount(String username, String password)
+	{
+		account.username = username;
+		account.password = password;
+	}
+	
+	public Account getAccount()
+	{
+		return account;
 	}
 	
 	public String getPullPath()
