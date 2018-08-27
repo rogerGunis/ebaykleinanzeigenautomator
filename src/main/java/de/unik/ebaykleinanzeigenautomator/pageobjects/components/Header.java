@@ -10,6 +10,7 @@ import de.unik.ebaykleinanzeigenautomator.pageobjects.Component;
 import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.Homepage;
 import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.LoginPage;
 import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.LogoutPage;
+import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.ManagedAdsPage;
 
 public class Header extends Component
 {
@@ -44,6 +45,15 @@ public class Header extends Component
 		validateIsLoggedOut();
 		
 		return new LogoutPage();
+	}
+	
+	public ManagedAdsPage clickManagedAds()
+	{
+		$("#site-mainnav-my-link").shouldBe(visible).click();
+		
+		$("#my-manageads-content").shouldBe(visible);
+		
+		return new ManagedAdsPage();
 	}
 	
 	public void validateIsLoggedIn()
