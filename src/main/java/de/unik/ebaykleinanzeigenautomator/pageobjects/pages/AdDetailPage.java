@@ -1,5 +1,6 @@
 package de.unik.ebaykleinanzeigenautomator.pageobjects.pages;
 
+import static com.codeborne.selenide.CollectionCondition.sizeGreaterThanOrEqual;
 import static com.codeborne.selenide.Condition.attribute;
 import static com.codeborne.selenide.Condition.exist;
 import static com.codeborne.selenide.Condition.visible;
@@ -8,6 +9,7 @@ import static com.codeborne.selenide.Selenide.$$;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Hashtable;
 import java.util.List;
 
 import com.codeborne.selenide.CollectionCondition;
@@ -33,24 +35,41 @@ public class AdDetailPage extends BrowsingPage
 	{
 		pullDetails(smallAd);
 		pullCategories(smallAd.categories);
+		pullAttributes(smallAd.attributes);
 		
-		// Open image zoom container
-		$("#viewad-image.is-clickable").shouldBe(visible).scrollTo().click();
-		
-		// Store image information
-		pullImages(smallAd.id, smallAd.images);
-		
-		// Close image zoom container
-		$("#viewad-lightbox a.mfp-close").shouldBe(visible).scrollTo().click();
+		if($("#viewad-images").exists())
+		{
+			// Open image zoom container
+			$("#viewad-image.is-clickable").shouldBe(visible).scrollTo().click();
+			
+			// Store image information
+			pullImages(smallAd.id, smallAd.images);
+			
+			// Close image zoom container
+			$("#viewad-lightbox a.mfp-close").shouldBe(visible).scrollTo().click();
+		}
 	}
 	
 	private void pullDetails(SmallAd smallAd)
 	{
-		smallAd.title = $("#viewad-title").should(exist).text();
-		smallAd.creationDate = $("#viewad-details dl dd.attributelist--value:nth-of-type(2)").should(exist).text();
-		smallAd.content = $("#viewad-description-text").should(exist).text();
-		smallAd.price = $("#viewad-details section.l-container meta[itemprop='price']").should(exist).getAttribute("content");
-		smallAd.isFixedPrice = $("#viewad-price").should(exist).text().contains("VB") ? false : true;
+		smallAd.title = $("#viewad-title").shouldBe(visible).text();
+		smallAd.location = $("#viewad-locality").shouldBe(visible).text();
+		smallAd.creationDate = $("#viewad-details dl dd.attributelist--value:nth-of-type(2)").shouldBe(visible).text();
+		smallAd.content = $("#viewad-description-text").shouldBe(visible).text();
+		
+		String price = $("#viewad-details section.l-container meta[itemprop='price']").should(exist).getAttribute("content");
+		if(!price.trim().isEmpty())
+		{
+			smallAd.price = price;
+			smallAd.isFixedPrice = $("#viewad-price").should(exist).text().contains("VB") ? false : true;
+			smallAd.hasNoPrice = false;
+		}
+		else
+		{
+			smallAd.price = "";
+			smallAd.isFixedPrice = false;
+			smallAd.hasNoPrice = true;
+		}
 	}
 	
 	private void pullCategories(List<String> categories)
@@ -63,6 +82,21 @@ public class AdDetailPage extends BrowsingPage
 		{
 			String category = breadCrumb.get(i).find("span[itemprop=title]").should(exist).text();
 			categories.add(category.trim());
+		}
+	}
+	
+	private void pullAttributes(Hashtable<String, String> attributes)
+	{
+		ElementsCollection attributeKeys = $$("#viewad-details .attributelist--key").shouldHave(sizeGreaterThanOrEqual(3));
+		ElementsCollection attributeValues = $$("#viewad-details .attributelist--value").shouldHave(sizeGreaterThanOrEqual(3));
+		
+		// Attributes with index 0-2 are location, creation date and ad id and will be ignored here
+		for(int i=3; i<attributeKeys.size(); i++)
+		{
+			String key = attributeKeys.get(i).text().trim().replace(":", "");
+			String value = attributeValues.get(i).find("span").text().trim();
+			
+			attributes.put(key, value);
 		}
 	}
 
