@@ -14,6 +14,7 @@ import com.codeborne.selenide.SelenideElement;
 import de.unik.ebaykleinanzeigenautomator.models.AdFilter;
 import de.unik.ebaykleinanzeigenautomator.models.SmallAd;
 import de.unik.ebaykleinanzeigenautomator.models.SmallAdContainer;
+import de.unik.ebaykleinanzeigenautomator.util.Context;
 
 
 public class ManagedAdsPage extends BrowsingPage
@@ -43,7 +44,10 @@ public class ManagedAdsPage extends BrowsingPage
 			SmallAd smallAd = new SmallAd();
 			
 			// Re-evaluate elements collection each iteration
-			SelenideElement currentSmallAd = itemList.findAll("li.cardbox").get(i);
+			SelenideElement currentSmallAd = itemList.findAll("li.cardbox").get(i).should(exist);
+			
+			// Print status
+			System.out.println("Pulling details of small ad '" + currentSmallAd.find(".manageaditem-ad a").shouldBe(visible).text() + "' (" + (i + 1) + "/" + itemCount + ")");
 
 			// Pull overview
 			pullSmallAdOverview(smallAd, currentSmallAd);
@@ -53,6 +57,11 @@ public class ManagedAdsPage extends BrowsingPage
 			
 			// Collect
 			smallAdContainer.smallAdds.add(smallAd);
+		}
+		
+		if(itemCount == 0)
+		{
+			System.out.println("No small ads found for account '" + Context.get().getConfiguration().accountUsername() + "'");
 		}
 	}
 	

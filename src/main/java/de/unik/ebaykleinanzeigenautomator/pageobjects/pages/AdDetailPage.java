@@ -31,8 +31,6 @@ public class AdDetailPage extends BrowsingPage
 	
 	public void pullAdDetails(SmallAd smallAd)
 	{
-		System.out.println("Processing ad: " + $("#viewad-title").should(exist).text());
-		
 		pullDetails(smallAd);
 		pullCategories(smallAd.categories);
 		
@@ -52,9 +50,7 @@ public class AdDetailPage extends BrowsingPage
 		smallAd.creationDate = $("#viewad-details dl dd.attributelist--value:nth-of-type(2)").should(exist).text();
 		smallAd.content = $("#viewad-description-text").should(exist).text();
 		smallAd.price = $("#viewad-details section.l-container meta[itemprop='price']").should(exist).getAttribute("content");
-		
-		String priceText = $("#viewad-price").should(exist).text();
-		smallAd.isFixedPrice = priceText.contains("VB") ? false : true;
+		smallAd.isFixedPrice = $("#viewad-price").should(exist).text().contains("VB") ? false : true;
 	}
 	
 	private void pullCategories(List<String> categories)
@@ -77,7 +73,7 @@ public class AdDetailPage extends BrowsingPage
 		ElementsCollection imageElements = imageContainer.findAll(".ad-image-wrapper .ad-image > img").shouldHave(CollectionCondition.sizeGreaterThan(0));
 		
 		// Switch to data download folder
-		com.codeborne.selenide.Configuration.reportsFolder = Context.get().getConfiguration().projectDataDirectory();
+		com.codeborne.selenide.Configuration.reportsFolder = Context.get().getPullPath();
 		
 		// Loop through all available images
 		for(int i=0; i<imageElements.size(); i++)
@@ -88,9 +84,6 @@ public class AdDetailPage extends BrowsingPage
 			String imageUrl = imageElement.getAttribute("src");
 			try
 			{
-				// Status
-				System.out.println("Downloading image: " + imageUrl);
-				
 				// Trigger download
 				File imageFile = Selenide.download(imageUrl, Context.get().getConfiguration().selenideFileDownloadTimeout());
 				

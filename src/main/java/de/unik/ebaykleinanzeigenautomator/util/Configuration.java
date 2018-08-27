@@ -53,4 +53,7 @@ public interface Configuration extends Config
 	
 	@Key("project.dataDirectory")
 	public String projectDataDirectory();
+	
+	@Key("project.dataFile")
+	public String projectDataFile();
 }

@@ -76,4 +76,9 @@ public class Context
 	{
 		return sessionIdentifier;
 	}
+	
+	public String getPullPath()
+	{
+		return Context.get().getConfiguration().projectDataDirectory() + "/" + Context.get().getSessionIdentifier() + "/pull/";
+	}
 }
