@@ -2,7 +2,7 @@ package de.unik.ebaykleinanzeigenautomator.util;
 
 import org.aeonbits.owner.ConfigFactory;
 
-import de.unik.ebaykleinanzeigenautomator.models.Account;
+import de.unik.ebaykleinanzeigenautomator.datamodels.Account;
 
 public class Context
 {

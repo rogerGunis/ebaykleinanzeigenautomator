@@ -1,7 +1,7 @@
 package de.unik.ebaykleinanzeigenautomator.flows;
 
-import de.unik.ebaykleinanzeigenautomator.models.AdFilter;
-import de.unik.ebaykleinanzeigenautomator.models.SmallAdContainer;
+import de.unik.ebaykleinanzeigenautomator.datamodels.AdFilter;
+import de.unik.ebaykleinanzeigenautomator.datamodels.SmallAdContainer;
 import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.Homepage;
 import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.LoginPage;
 import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.ManagedAdsPage;

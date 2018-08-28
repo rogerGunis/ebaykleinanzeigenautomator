@@ -11,9 +11,9 @@ import org.junit.Assert;
 import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.SelenideElement;
 
-import de.unik.ebaykleinanzeigenautomator.models.AdFilter;
-import de.unik.ebaykleinanzeigenautomator.models.SmallAd;
-import de.unik.ebaykleinanzeigenautomator.models.SmallAdContainer;
+import de.unik.ebaykleinanzeigenautomator.datamodels.AdFilter;
+import de.unik.ebaykleinanzeigenautomator.datamodels.SmallAd;
+import de.unik.ebaykleinanzeigenautomator.datamodels.SmallAdContainer;
 import de.unik.ebaykleinanzeigenautomator.util.Context;
 
 

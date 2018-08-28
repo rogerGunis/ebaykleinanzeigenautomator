@@ -1,4 +1,4 @@
-package de.unik.ebaykleinanzeigenautomator.models;
+package de.unik.ebaykleinanzeigenautomator.datamodels;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package de.unik.ebaykleinanzeigenautomator.models;
+package de.unik.ebaykleinanzeigenautomator.datamodels;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -34,6 +34,18 @@ public class SmallAd
 	public List<String> categories = new ArrayList<String>();
 	
 	public Hashtable<String, String> attributes = new Hashtable<String, String>(); 
+
+	public boolean isValid()
+	{
+		boolean valid = !title.isEmpty() && !content.isEmpty() && (categories.size() >= 2);
+		
+		if(!hasNoPrice)
+		{
+			valid &= !price.isEmpty();
+		}
+		
+		return valid;
+	}
 	
 	public JSONObject toJson()
 	{

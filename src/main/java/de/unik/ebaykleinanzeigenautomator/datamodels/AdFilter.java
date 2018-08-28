@@ -1,4 +1,4 @@
-package de.unik.ebaykleinanzeigenautomator.models;
+package de.unik.ebaykleinanzeigenautomator.datamodels;
 
 public class AdFilter
 {

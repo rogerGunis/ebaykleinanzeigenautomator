@@ -17,7 +17,7 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 
-import de.unik.ebaykleinanzeigenautomator.models.SmallAd;
+import de.unik.ebaykleinanzeigenautomator.datamodels.SmallAd;
 import de.unik.ebaykleinanzeigenautomator.util.Context;
 
 
