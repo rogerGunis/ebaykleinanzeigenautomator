@@ -5,16 +5,16 @@ import de.unik.ebaykleinanzeigenautomator.pageobjects.components.Header;
 
 public class BrowsingPage extends PageObject
 {
-	public Header header = new Header();
-	
-	public BrowsingPage()
-	{
-		validateIsExpectedPage();
-	}
-	
-	@Override
-	public void validateIsExpectedPage()
-	{
-		header.validateComponentIsAvailable();
-	}
+    public Header header = new Header();
+
+    public BrowsingPage()
+    {
+        validateIsExpectedPage();
+    }
+
+    @Override
+    public void validateIsExpectedPage()
+    {
+        header.validateComponentIsAvailable();
+    }
 }

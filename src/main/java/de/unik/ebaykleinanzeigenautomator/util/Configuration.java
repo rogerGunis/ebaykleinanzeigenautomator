@@ -9,54 +9,54 @@ import org.aeonbits.owner.Config.Sources;
 @Sources({ "file:config/project.properties", "file:config/credentials.properties" })
 public interface Configuration extends Config
 {
-	@Key("site.domain")
-	public String siteDomain();
-	
-	@Key("site.url")
-	public String siteUrl();
+    @Key("site.domain")
+    public String siteDomain();
 
-	@Key("account.username")
-	public String accountUsername();
+    @Key("site.url")
+    public String siteUrl();
 
-	@Key("account.password")
-	public String accountPassword();
+    @Key("account.username")
+    public String accountUsername();
 
-	@Key("selenide.browser")
-	public String selenideBrowser();
+    @Key("account.password")
+    public String accountPassword();
 
-	@Key("selenide.headless")
-	public boolean selenideHeadless();
+    @Key("selenide.browser")
+    public String selenideBrowser();
 
-	@Key("selenide.holdBrowserOpen")
-	public boolean selenideHoldBrowserOpen();
+    @Key("selenide.headless")
+    public boolean selenideHeadless();
 
-	@Key("selenide.startMaximized")
-	public boolean selenideStartMaximized();
-	
-	@Key("selenide.recordScreenshots")
-	public boolean selenideRecordScreenshots();
+    @Key("selenide.holdBrowserOpen")
+    public boolean selenideHoldBrowserOpen();
 
-	@Key("selenide.reportsFolder")
-	public String selenideReportsFolder();
+    @Key("selenide.startMaximized")
+    public boolean selenideStartMaximized();
 
-	@Key("selenide.pageLoadStrategy")
-	public String selenidePageLoadStrategy();
+    @Key("selenide.recordScreenshots")
+    public boolean selenideRecordScreenshots();
 
-	@Key("selenide.savePageSource")
-	public boolean selenideSavePageSource();
-	
-	@Key("selenide.timeout")
-	public long selenideTimeout();
-	
-	@Key("selenide.fileDownloadTimeout")
-	public long selenideFileDownloadTimeout();
-	
-	@Key("project.dataDirectory")
-	public String projectDataDirectory();
-	
-	@Key("project.dataFile")
-	public String projectDataFile();
-	
-	@Key("project.pullImages")
-	public boolean projectPullImages();	
+    @Key("selenide.reportsFolder")
+    public String selenideReportsFolder();
+
+    @Key("selenide.pageLoadStrategy")
+    public String selenidePageLoadStrategy();
+
+    @Key("selenide.savePageSource")
+    public boolean selenideSavePageSource();
+
+    @Key("selenide.timeout")
+    public long selenideTimeout();
+
+    @Key("selenide.fileDownloadTimeout")
+    public long selenideFileDownloadTimeout();
+
+    @Key("project.dataDirectory")
+    public String projectDataDirectory();
+
+    @Key("project.dataFile")
+    public String projectDataFile();
+
+    @Key("project.downloadImages")
+    public boolean projectDownloadImages();
 }

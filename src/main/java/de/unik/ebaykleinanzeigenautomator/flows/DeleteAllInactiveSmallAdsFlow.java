@@ -6,18 +6,18 @@ import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.ManagedAdsPage;
 
 public class DeleteAllInactiveSmallAdsFlow
 {
-	public void run()
-	{
+    public void run()
+    {
         Homepage homepage = new OpenHomepageFlow().run();
-        LoginPage loginPage = homepage.header.clickLogin();
-        
+        LoginPage loginPage = homepage.header.clickLoginLink();
+
         loginPage.fillLoginDetails();
         homepage = loginPage.clickLogin();
-        
+
         ManagedAdsPage managedAdsPage = homepage.header.clickManagedAds();
-                
-    		managedAdsPage.deleteAllInactiveSmallAds();
-        
-    		managedAdsPage.header.clickLogout();
-	}
+
+        managedAdsPage.deleteAllInactiveSmallAds();
+
+        managedAdsPage.header.clickLogoutLink();
+    }
 }

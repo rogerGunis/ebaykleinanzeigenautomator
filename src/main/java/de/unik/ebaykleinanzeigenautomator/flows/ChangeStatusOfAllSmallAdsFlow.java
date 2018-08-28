@@ -6,32 +6,32 @@ import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.ManagedAdsPage;
 
 public class ChangeStatusOfAllSmallAdsFlow
 {
-	private boolean activate;
-	
-	public ChangeStatusOfAllSmallAdsFlow(boolean activate)
-	{
-		this.activate = activate;
-	}
-	
-	public void run()
-	{
+    private boolean activate;
+
+    public ChangeStatusOfAllSmallAdsFlow(boolean activate)
+    {
+        this.activate = activate;
+    }
+
+    public void run()
+    {
         Homepage homepage = new OpenHomepageFlow().run();
-        LoginPage loginPage = homepage.header.clickLogin();
-        
+        LoginPage loginPage = homepage.header.clickLoginLink();
+
         loginPage.fillLoginDetails();
         homepage = loginPage.clickLogin();
-        
+
         ManagedAdsPage managedAdsPage = homepage.header.clickManagedAds();
-        
-        if(activate)
+
+        if (activate)
         {
-        		managedAdsPage.activateAllSmallAds();
+            managedAdsPage.activateAllSmallAds();
         }
         else
         {
-        		managedAdsPage.deactivateAllSmallAds();
+            managedAdsPage.deactivateAllSmallAds();
         }
-        
-        managedAdsPage.header.clickLogout();
-	}
+
+        managedAdsPage.header.clickLogoutLink();
+    }
 }

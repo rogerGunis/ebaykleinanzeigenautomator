@@ -1,30 +1,37 @@
 package de.unik.ebaykleinanzeigenautomator;
 
+import de.unik.ebaykleinanzeigenautomator.flows.ChangeStatusOfAllSmallAdsFlow;
 import de.unik.ebaykleinanzeigenautomator.flows.DeleteAllInactiveSmallAdsFlow;
 import de.unik.ebaykleinanzeigenautomator.flows.PullSmallAdContainerFlow;
 import de.unik.ebaykleinanzeigenautomator.util.Context;
 
-public class App 
+public class App
 {
-    public static void main( String[] args )
+    public static void main(String[] args)
     {
-    		Context.initialize();
+        Context.initialize();
 
-    		new PullSmallAdContainerFlow().run().writeToDisk();
-    		
-    		//new DeleteAllInactiveSmallAdsFlow().run();
+        new DeleteAllInactiveSmallAdsFlow().run();
 
-	    //Context.get().resetSessionIdentifier();
-		//new PullSmallAdContainerFlow().run().writeToDisk();
-    		
-    		//new ChangeStatusOfAllSmallAdsFlow(false).run();
+        new PullSmallAdContainerFlow().run().writeToDisk();
 
-        //Context.get().resetSessionIdentifier();
-    		//new PullSmallAdContainerFlow().run().writeToDisk();
-    		
-    		//new ChangeStatusOfAllSmallAdsFlow(true).run();
-    		
-        //Context.get().resetSessionIdentifier();
-    		//new PullSmallAdContainerFlow().run().writeToDisk();
+        new ChangeStatusOfAllSmallAdsFlow(false).run();
+
+        new ChangeStatusOfAllSmallAdsFlow(true).run();
+        
+        /*
+        SmallAdContainer smallAdContainer = new SmallAdContainer();
+        if(!smallAdContainer.readFromDisk("1535486795672"))
+        {
+            return;
+        }
+            
+        if(smallAdContainer.writeToDisk())
+        {
+            return;
+        }
+        */
+        
+        System.out.println("Everything ok");
     }
 }

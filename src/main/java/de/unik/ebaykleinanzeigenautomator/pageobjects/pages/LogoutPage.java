@@ -5,11 +5,11 @@ import static com.codeborne.selenide.Selenide.$;
 
 public class LogoutPage extends BrowsingPage
 {
-	@Override
-	public void validateIsExpectedPage()
-	{
-		super.validateIsExpectedPage();
-		
-		$("#logout").should(exist);
-	}
+    @Override
+    public void validateIsExpectedPage()
+    {
+        super.validateIsExpectedPage();
+
+        $("#logout").should(exist);
+    }
 }

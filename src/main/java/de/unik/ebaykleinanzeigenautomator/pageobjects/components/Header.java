@@ -14,57 +14,57 @@ import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.ManagedAdsPage;
 
 public class Header extends Component
 {
-	private SelenideElement loginLink = $("#site-signin nav li > a[data-gaevent*=LoginBegin]");
-	
-	private SelenideElement logoutLink = $("#user-logout");
-	
-	@Override
-	public void validateComponentIsAvailable()
-	{
-		$("#site-header-top").should(exist);
-	}
-	
-	public Homepage clickHome()
-	{
-		$("#site-logo > .logo > a").shouldBe(visible).scrollTo().click();
-		
-		return new Homepage();
-	}
-	
-	public LoginPage clickLogin()
-	{
-		loginLink.shouldBe(visible).scrollTo().click();
-		
-		return new LoginPage();
-	}
-	
-	public LogoutPage clickLogout()
-	{
-		logoutLink.shouldBe(visible).scrollTo().click();
-		
-		validateIsLoggedOut();
-		
-		return new LogoutPage();
-	}
-	
-	public ManagedAdsPage clickManagedAds()
-	{
-		$("#site-mainnav-my-link").shouldBe(visible).click();
-		
-		$("#my-manageads-content").shouldBe(visible);
-		
-		return new ManagedAdsPage();
-	}
-	
-	public void validateIsLoggedIn()
-	{
-		loginLink.shouldNotBe(visible);
-		logoutLink.shouldBe(visible);
-	}
-	
-	public void validateIsLoggedOut()
-	{
-		loginLink.shouldBe(visible);
-		logoutLink.shouldNotBe(visible);
-	}
+    private SelenideElement loginLink = $("#site-signin nav li > a[data-gaevent*=LoginBegin]");
+
+    private SelenideElement logoutLink = $("#user-logout");
+
+    @Override
+    public void validateComponentIsAvailable()
+    {
+        $("#site-header-top").should(exist);
+    }
+
+    public Homepage clickHome()
+    {
+        $("#site-logo > .logo > a").shouldBe(visible).scrollTo().click();
+
+        return new Homepage();
+    }
+
+    public LoginPage clickLoginLink()
+    {
+        loginLink.shouldBe(visible).scrollTo().click();
+
+        return new LoginPage();
+    }
+
+    public LogoutPage clickLogoutLink()
+    {
+        logoutLink.shouldBe(visible).scrollTo().click();
+
+        validateIsLoggedOut();
+
+        return new LogoutPage();
+    }
+
+    public ManagedAdsPage clickManagedAds()
+    {
+        $("#site-mainnav-my-link").shouldBe(visible).click();
+
+        $("#my-manageads-content").shouldBe(visible);
+
+        return new ManagedAdsPage();
+    }
+
+    public void validateIsLoggedIn()
+    {
+        loginLink.shouldNotBe(visible);
+        logoutLink.shouldBe(visible);
+    }
+
+    public void validateIsLoggedOut()
+    {
+        loginLink.shouldBe(visible);
+        logoutLink.shouldNotBe(visible);
+    }
 }

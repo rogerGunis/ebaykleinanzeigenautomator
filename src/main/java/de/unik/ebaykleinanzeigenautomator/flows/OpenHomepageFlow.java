@@ -8,12 +8,12 @@ import de.unik.ebaykleinanzeigenautomator.util.Context;
 
 public class OpenHomepageFlow
 {
-	public Homepage run()
-	{
-		clearBrowserCookies();
-		
-		open(Context.get().getConfiguration().siteUrl());
-		
-		return new Homepage();
-	}
+    public Homepage run()
+    {
+        clearBrowserCookies();
+
+        open(Context.get().getConfiguration().siteUrl());
+
+        return new Homepage();
+    }
 }
