@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 
 import com.codeborne.selenide.CollectionCondition;
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
 
 import de.unik.ebaykleinanzeigenautomator.datamodels.SmallAd;
@@ -35,35 +36,39 @@ public class ManagedAdsPage extends BrowsingPage
 	
 	public void activateAllSmallAds()
 	{
-		processAndCollectAllSmallAds("Activating", null, s -> isInactive(s), s -> activateSmallAd(s));
+		processSmallAds("Activating", null, s -> isInactive(s), s -> activateSmallAd(s), false);
 	}
 	
 	public void deactivateAllSmallAds()
 	{
-		processAndCollectAllSmallAds("Dectivating", null, s -> isActive(s), s -> deactivateSmallAd(s));
+		processSmallAds("Dectivating", null, s -> isActive(s), s -> deactivateSmallAd(s), false);
 	}
 	
+	public void deleteAllInactiveSmallAds()
+	{
+		processSmallAds("Deleting", null, s -> isInactive(s), s -> deleteSmallAd(s), true);
+	}
+
 	public void deleteAllActiveSmallAds()
 	{
-		// For testing purposes delete inactive ads only
-		processAndCollectAllSmallAds("Deleting", null, s -> isInactive(s), s -> deleteActiveSmallAd(s));
+		processSmallAds("Deleting", null, s -> isActive(s), s -> deleteSmallAd(s), true);
 	}
 
 	public void pullAllSmallAds(SmallAdContainer smallAdContainer)
 	{
-		processAndCollectAllSmallAds("Pulling", smallAdContainer, s -> { return true; }, s -> pullSmallAd(s));
+		processSmallAds("Pulling", smallAdContainer, s -> { return true; }, s -> pullSmallAd(s), false);
 	}
 	
-	private void processAndCollectAllSmallAds(String operation, SmallAdContainer smallAdContainer, Predicate<SelenideElement> predicate, Function<SelenideElement, SmallAd> function)
+	private void processSmallAds(String operation, SmallAdContainer smallAdContainer, Predicate<SelenideElement> predicate, Function<SelenideElement, SmallAd> function, boolean modifiesItemList)
 	{
 		// Validate
 		itemList.findAll("li.cardbox").shouldHave(CollectionCondition.sizeGreaterThan(0));
 
-		int itemCount = itemList.findAll("li.cardbox").size();
-		
 		boolean applied = false;
+		int itemCount = itemList.findAll("li.cardbox").size();
+		int i = 0;
 
-		for(int i=0; i<itemCount; i++)
+		while(i < itemCount)
 		{
 			// Re-evaluate elements collection each iteration
 			SelenideElement currentSmallAdElement = itemList.findAll("li.cardbox").get(i).should(exist);
@@ -87,6 +92,25 @@ public class ManagedAdsPage extends BrowsingPage
 				
 				// Indicate that we could execute our operation at least once
 				applied = true;
+				
+				if(!modifiesItemList)
+				{
+					// Increase counter only if operation does not modify our item list
+					i++;
+				}
+				else
+				{
+					// If the operation modified our item list, we now have fewer items
+					itemCount--;
+					
+					// Validate that list changed
+					itemList.findAll("li.cardbox").shouldHaveSize(itemCount);
+				}
+			}
+			else
+			{
+				// Increase counter since nothing happened anyway
+				i++;
 			}
 		}
 		
@@ -95,18 +119,17 @@ public class ManagedAdsPage extends BrowsingPage
 			System.out.println("No applicable small ads found in account '" + Context.get().getAccount().username + "'");
 		}
 	}
-
+	
 	private boolean isInactive(SelenideElement smallAdElement)
 	{
-		$("a.managead-listitem-action-activate.is-hidden, a.managead-listitem-action-deactivate.is-hidden").should(exist);
+		smallAdElement.$("a.managead-listitem-action-activate.is-hidden, a.managead-listitem-action-deactivate.is-hidden").should(exist);
+		//smallAdElement.$("a.managead-listitem-action-activate, a.managead-listitem-action-deactivate").shouldBe(visible);
 		
-		return smallAdElement.$("a.managead-listitem-action-deactivate.is-hidden").exists();
+		return smallAdElement.$("a.managead-listitem-action-activate").is(visible);
 	}
 
 	private SmallAd activateSmallAd(SelenideElement smallAdElement)
 	{
-		$("a.managead-listitem-action-activate.is-hidden, a.managead-listitem-action-deactivate.is-hidden").should(exist);
-		
 		smallAdElement.$("a.managead-listitem-action-activate").shouldBe(visible).scrollTo().click();
 
 		return null;
@@ -114,21 +137,20 @@ public class ManagedAdsPage extends BrowsingPage
 
 	private boolean isActive(SelenideElement smallAdElement)
 	{
-		$("a.managead-listitem-action-activate.is-hidden, a.managead-listitem-action-deactivate.is-hidden").should(exist);
+		smallAdElement.$("a.managead-listitem-action-activate.is-hidden, a.managead-listitem-action-deactivate.is-hidden").should(exist);
+		//smallAdElement.$("a.managead-listitem-action-activate, a.managead-listitem-action-deactivate").shouldBe(visible);
 		
-		return smallAdElement.$("a.managead-listitem-action-activate.is-hidden").exists();
+		return smallAdElement.$("a.managead-listitem-action-deactivate").is(visible);
 	}
 
 	private SmallAd deactivateSmallAd(SelenideElement smallAdElement)
 	{
-		$("a.managead-listitem-action-activate.is-hidden, a.managead-listitem-action-deactivate.is-hidden").should(exist);
-		
 		smallAdElement.$("a.managead-listitem-action-deactivate").shouldBe(visible).scrollTo().click();
 		
 		return null;
 	}
 	
-	private SmallAd deleteActiveSmallAd(SelenideElement smallAdElement)
+	private SmallAd deleteSmallAd(SelenideElement smallAdElement)
 	{
 		// Click delete button
 		smallAdElement.$("a.managead-listitem-action-delete").shouldBe(visible).scrollTo().click();
@@ -148,6 +170,9 @@ public class ManagedAdsPage extends BrowsingPage
 	private SmallAd pullSmallAd(SelenideElement smallAdElement)
 	{
 		SmallAd smallAd = new SmallAd();
+		
+		// Lets see whats going on
+		smallAdElement.scrollTo();
 
 		// Get activation status
 		smallAd.isActive = isActive(smallAdElement);
@@ -181,7 +206,7 @@ public class ManagedAdsPage extends BrowsingPage
 	private void pullSmallAdDetails(SelenideElement smallAdElement, SmallAd smallAd)
 	{
 		// Open ad detail page
-		smallAdElement.$("section.manageaditem-ad > h2 > a").shouldBe(visible).click();
+		smallAdElement.$("section.manageaditem-ad > h2 > a").shouldBe(visible).scrollTo().click();
 		
 		// Create small ad detail page and pull details
 		AdDetailPage adDetailPage = new AdDetailPage();

@@ -57,17 +57,28 @@ public class AdDetailPage extends BrowsingPage
 		smallAd.creationDate = $("#viewad-details dl dd.attributelist--value:nth-of-type(2)").shouldBe(visible).text();
 		smallAd.content = $("#viewad-description-text").shouldBe(visible).text();
 		
-		String price = $("#viewad-details section.l-container meta[itemprop='price']").should(exist).getAttribute("content");
-		if(!price.trim().isEmpty())
+		if($("#viewad-price").exists())
 		{
-			smallAd.price = price;
-			smallAd.isFixedPrice = $("#viewad-price").should(exist).text().contains("VB") ? false : true;
-			smallAd.hasNoPrice = false;
+			smallAd.price = $("#viewad-details section.l-container meta[itemprop='price'][content]").should(exist).getAttribute("content").trim();
+			
+			if(!smallAd.price.isEmpty())
+			{
+				smallAd.isFixedPrice = $("#viewad-price").should(exist).text().contains("VB") ? false : true;
+				smallAd.isForFree = false;
+				smallAd.hasNoPrice = false;
+			}
+			else
+			{
+				smallAd.isFixedPrice = false;
+				smallAd.isForFree = true;
+				smallAd.hasNoPrice = false;
+			}
 		}
 		else
 		{
 			smallAd.price = "";
 			smallAd.isFixedPrice = false;
+			smallAd.isForFree = false;
 			smallAd.hasNoPrice = true;
 		}
 	}

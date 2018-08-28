@@ -25,6 +25,8 @@ public class SmallAd
 	
 	public boolean isFixedPrice = false;
 	
+	public boolean isForFree = false;
+	
 	public boolean hasNoPrice = false;
 	
 	public boolean useContact = false;
@@ -39,7 +41,7 @@ public class SmallAd
 	{
 		boolean valid = !title.isEmpty() && !content.isEmpty() && (categories.size() >= 2);
 		
-		if(!hasNoPrice)
+		if(!hasNoPrice || !isForFree)
 		{
 			valid &= !price.isEmpty();
 		}
@@ -59,6 +61,7 @@ public class SmallAd
 		jsonObject.put("content", content);
 		jsonObject.put("price", price);
 		jsonObject.put("isFixedPrice", isFixedPrice);
+		jsonObject.put("isForFree", isForFree);
 		jsonObject.put("hasNoPrice", hasNoPrice);
 		jsonObject.put("useContact", useContact);
 		

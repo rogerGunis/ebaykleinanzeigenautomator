@@ -4,7 +4,7 @@ import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.Homepage;
 import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.LoginPage;
 import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.ManagedAdsPage;
 
-public class DeleteAllActiveSmallAdsFlow
+public class DeleteAllInactiveSmallAdsFlow
 {
 	public void run()
 	{
@@ -16,7 +16,7 @@ public class DeleteAllActiveSmallAdsFlow
         
         ManagedAdsPage managedAdsPage = homepage.header.clickManagedAds();
                 
-    		managedAdsPage.deleteAllActiveSmallAds();
+    		managedAdsPage.deleteAllInactiveSmallAds();
         
     		managedAdsPage.header.clickLogout();
 	}
