@@ -1,14 +1,19 @@
 package de.unik.ebaykleinanzeigenautomator.flows;
 
-import de.unik.ebaykleinanzeigenautomator.datamodels.SmallAdContainer;
 import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.Homepage;
 import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.LoginPage;
 import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.ManagedAdsPage;
-import de.unik.ebaykleinanzeigenautomator.util.Context;
 
-public class PullSmallAdContainerFlow
+public class ChangeStatusOfAllSmallAdsFlow
 {
-	public SmallAdContainer run()
+	private boolean activate;
+	
+	public ChangeStatusOfAllSmallAdsFlow(boolean activate)
+	{
+		this.activate = activate;
+	}
+	
+	public void run()
 	{
         Homepage homepage = new OpenHomepageFlow().run();
         LoginPage loginPage = homepage.header.clickLogin();
@@ -17,12 +22,16 @@ public class PullSmallAdContainerFlow
         homepage = loginPage.clickLogin();
         
         ManagedAdsPage managedAdsPage = homepage.header.clickManagedAds();
-                
-        SmallAdContainer smallAdContainer = new SmallAdContainer();
-        managedAdsPage.pullAllSmallAds(smallAdContainer);
+        
+        if(activate)
+        {
+        		managedAdsPage.activateAllSmallAds();
+        }
+        else
+        {
+        		managedAdsPage.deactivateAllSmallAds();
+        }
         
         managedAdsPage.header.clickLogout();
-
-        return smallAdContainer;
 	}
 }

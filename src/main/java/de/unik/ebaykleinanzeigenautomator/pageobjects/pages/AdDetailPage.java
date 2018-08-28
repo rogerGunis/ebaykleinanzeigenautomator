@@ -37,7 +37,7 @@ public class AdDetailPage extends BrowsingPage
 		pullCategories(smallAd.categories);
 		pullAttributes(smallAd.attributes);
 		
-		if($("#viewad-images").exists())
+		if(Context.get().getConfiguration().projectPullImages() && $("#viewad-images").exists())
 		{
 			// Open image zoom container
 			$("#viewad-image.is-clickable").shouldBe(visible).scrollTo().click();

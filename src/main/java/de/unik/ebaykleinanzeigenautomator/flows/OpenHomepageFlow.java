@@ -8,12 +8,7 @@ import de.unik.ebaykleinanzeigenautomator.util.Context;
 
 public class OpenHomepageFlow
 {
-	private OpenHomepageFlow()
-	{
-		// Empty
-	}
-	
-	public static Homepage run()
+	public Homepage run()
 	{
 		clearBrowserCookies();
 		

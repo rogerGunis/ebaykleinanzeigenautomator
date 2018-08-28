@@ -17,7 +17,8 @@ public class Context
 	private Context()
 	{
 		configuration = ConfigFactory.create(Configuration.class, System.getProperties(), System.getenv());
-		sessionIdentifier = System.currentTimeMillis();
+		
+		resetSessionIdentifier();
 	}
 	
 	public static void initialize()
@@ -80,6 +81,11 @@ public class Context
 	public long getSessionIdentifier()
 	{
 		return sessionIdentifier;
+	}
+	
+	public void resetSessionIdentifier()
+	{
+		sessionIdentifier = System.currentTimeMillis();
 	}
 	
 	public void setAccount(String username, String password)

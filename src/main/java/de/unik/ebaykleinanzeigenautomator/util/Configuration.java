@@ -56,4 +56,7 @@ public interface Configuration extends Config
 	
 	@Key("project.dataFile")
 	public String projectDataFile();
+	
+	@Key("project.pullImages")
+	public boolean projectPullImages();	
 }

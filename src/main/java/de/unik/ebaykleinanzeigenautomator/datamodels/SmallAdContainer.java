@@ -3,6 +3,7 @@ package de.unik.ebaykleinanzeigenautomator.datamodels;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
@@ -48,14 +49,28 @@ public class SmallAdContainer
 
 	public void writeToDisk()
 	{
-		String path = Context.get().getPullPath() + Context.get().getConfiguration().projectDataFile();
+		Path workingDirectoryPath = new File(Context.get().getPullPath()).toPath();
+		if(!Files.exists(workingDirectoryPath))
+		{
+			try
+			{
+				Files.createDirectories(workingDirectoryPath);
+			}
+			catch (IOException e)
+			{
+				System.out.println("Failed to create directory " + workingDirectoryPath);
+				e.printStackTrace();
+			}
+		}
+		
+		Path outputFilePath = workingDirectoryPath.resolve(Context.get().getConfiguration().projectDataFile());
 		try
 		{
-			Files.write(Paths.get(new File(path).toURI()), toString().getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+			Files.write(outputFilePath, this.toString().getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 		}
 		catch (IOException e)
 		{
-			System.out.println("Failed to write file: " + path);
+			System.out.println("Failed to write file " + outputFilePath);
 			e.printStackTrace();
 		}
 	}
