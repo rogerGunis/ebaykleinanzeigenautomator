@@ -52,16 +52,12 @@ public class ManagedAdsPage extends BrowsingPage
         processSmallAds("Deleting", null, s -> isActive(s), s -> deleteSmallAd(s), true);
     }
 
-    public void pullAllSmallAds(SmallAdContainer smallAdContainer)
+    public void exportAllSmallAds(SmallAdContainer smallAdContainer)
     {
-        processSmallAds("Pulling", smallAdContainer, s ->
-        {
-            return true;
-        }, s -> pullSmallAd(s), false);
+        processSmallAds("Exporting", smallAdContainer, s -> { return true; }, s -> exportSmallAd(s), false);
     }
 
-    private void processSmallAds(String operation, SmallAdContainer smallAdContainer, Predicate<SelenideElement> predicate, Function<SelenideElement, SmallAd> function,
-                    boolean modifiesItemList)
+    private void processSmallAds(String operation, SmallAdContainer smallAdContainer, Predicate<SelenideElement> predicate, Function<SelenideElement, SmallAd> function, boolean modifiesItemList)
     {
         // Validate
         itemList.findAll("li.cardbox").shouldHave(CollectionCondition.sizeGreaterThan(0));
@@ -167,7 +163,7 @@ public class ManagedAdsPage extends BrowsingPage
         return null;
     }
 
-    private SmallAd pullSmallAd(SelenideElement smallAdElement)
+    private SmallAd exportSmallAd(SelenideElement smallAdElement)
     {
         SmallAd smallAd = new SmallAd();
 
@@ -183,7 +179,7 @@ public class ManagedAdsPage extends BrowsingPage
         Assert.assertTrue("Ad id must exist and not be empty.", StringUtils.isNotBlank(id));
         smallAd.id = id;
 
-        // We need to activate inactive small ads first (otherwise we can not pull all details)
+        // We need to activate inactive small ads first (otherwise we can not export all details)
         boolean wasTemporarilyActivated = false;
         if (!smallAd.isActive)
         {
@@ -192,7 +188,7 @@ public class ManagedAdsPage extends BrowsingPage
         }
 
         // Retrieve further information from small ad detail page
-        pullSmallAdDetails(smallAdElement, smallAd);
+        exportSmallAdDetails(smallAdElement, smallAd);
 
         // Deactivate if necessary
         if (wasTemporarilyActivated)
@@ -203,14 +199,14 @@ public class ManagedAdsPage extends BrowsingPage
         return smallAd;
     }
 
-    private void pullSmallAdDetails(SelenideElement smallAdElement, SmallAd smallAd)
+    private void exportSmallAdDetails(SelenideElement smallAdElement, SmallAd smallAd)
     {
         // Open ad detail page
         smallAdElement.$("section.manageaditem-ad > h2 > a").shouldBe(visible).scrollTo().click();
 
-        // Create small ad detail page and pull details
-        AdDetailPage adDetailPage = new AdDetailPage();
-        adDetailPage.pullAdDetails(smallAd);
+        // Create small ad detail page and export details
+        AdDetailsPage adDetailPage = new AdDetailsPage();
+        adDetailPage.exportAdDetails(smallAd);
 
         // Leave small ad details page
         adDetailPage.header.clickManagedAds();

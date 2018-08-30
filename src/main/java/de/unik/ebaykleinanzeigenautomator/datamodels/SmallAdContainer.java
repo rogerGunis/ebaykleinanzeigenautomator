@@ -80,6 +80,11 @@ public class SmallAdContainer
                 System.out.println("Failed to read file '" + inputFilePath + "'");
                 System.out.println("Error was: " + e.getMessage());
                 
+                if(Context.get().getConfiguration().projectDebug())
+                {
+                    e.printStackTrace();
+                }
+                
                 return false;
             }
 
@@ -87,10 +92,15 @@ public class SmallAdContainer
             {
                 fromJSON(new JSONObject(jsonString));
             }
-            catch (Exception je)
+            catch (Exception e)
             {
                 System.out.println("Failed to interpret file '" + inputFilePath + "'");
-                System.out.println("Error was: " + je.getMessage());
+                System.out.println("Error was: " + e.getMessage());
+                
+                if(Context.get().getConfiguration().projectDebug())
+                {
+                    e.printStackTrace();
+                }
                 
                 return false;
             }
@@ -118,6 +128,11 @@ public class SmallAdContainer
             {
                 System.out.println("Failed to create directory '" + workingDirectoryPath + "'");
                 System.out.println("Error was: " + e.getMessage());
+                
+                if(Context.get().getConfiguration().projectDebug())
+                {
+                    e.printStackTrace();
+                }
 
                 return false;
             }
@@ -132,6 +147,11 @@ public class SmallAdContainer
         {
             System.out.println("Failed to write file '" + outputFilePath + "'");
             System.out.println("Error was: " + e.getMessage());
+            
+            if(Context.get().getConfiguration().projectDebug())
+            {
+                e.printStackTrace();
+            }
             
             return false;
         }

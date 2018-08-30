@@ -51,6 +51,9 @@ public interface Configuration extends Config
     @Key("selenide.fileDownloadTimeout")
     public long selenideFileDownloadTimeout();
 
+    @Key("project.debug")
+    public boolean projectDebug();
+
     @Key("project.dataDirectory")
     public String projectDataDirectory();
 

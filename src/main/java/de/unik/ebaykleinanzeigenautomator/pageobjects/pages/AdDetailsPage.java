@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.openqa.selenium.By;
+
 import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
@@ -20,7 +22,7 @@ import com.codeborne.selenide.SelenideElement;
 import de.unik.ebaykleinanzeigenautomator.datamodels.SmallAd;
 import de.unik.ebaykleinanzeigenautomator.util.Context;
 
-public class AdDetailPage extends BrowsingPage
+public class AdDetailsPage extends BrowsingPage
 {
     @Override
     public void validateIsExpectedPage()
@@ -30,11 +32,11 @@ public class AdDetailPage extends BrowsingPage
         $("#vap").should(exist);
     }
 
-    public void pullAdDetails(SmallAd smallAd)
+    public void exportAdDetails(SmallAd smallAd)
     {
-        pullDetails(smallAd);
-        pullCategories(smallAd.categories);
-        pullAttributes(smallAd.attributes);
+        exportDetails(smallAd);
+        exportCategories(smallAd.categories);
+        exportAttributes(smallAd.attributes);
 
         if (Context.get().getConfiguration().projectDownloadImages() && $("#viewad-images").exists())
         {
@@ -42,15 +44,16 @@ public class AdDetailPage extends BrowsingPage
             $("#viewad-image.is-clickable").shouldBe(visible).scrollTo().click();
 
             // Store image information
-            pullImages(smallAd.id, smallAd.images);
+            exportImages(smallAd.id, smallAd.images);
 
             // Close image zoom container
             $("#viewad-lightbox a.mfp-close").shouldBe(visible).scrollTo().click();
         }
     }
 
-    private void pullDetails(SmallAd smallAd)
+    private void exportDetails(SmallAd smallAd)
     {
+        smallAd.isOffer = !$(By.xpath("//script[contains(., 'WANTED')]")).exists();
         smallAd.title = $("#viewad-title").shouldBe(visible).text();
         smallAd.location = $("#viewad-locality").shouldBe(visible).text();
         smallAd.creationDate = $("#viewad-details dl dd.attributelist--value:nth-of-type(2)").shouldBe(visible).text();
@@ -82,7 +85,7 @@ public class AdDetailPage extends BrowsingPage
         }
     }
 
-    private void pullCategories(List<String> categories)
+    private void exportCategories(List<String> categories)
     {
         ElementsCollection breadCrumb = $$("#vap-brdcrmb > .breadcrump-link");
         breadCrumb.shouldHave(CollectionCondition.sizeGreaterThan(0));
@@ -95,7 +98,7 @@ public class AdDetailPage extends BrowsingPage
         }
     }
 
-    private void pullAttributes(Hashtable<String, String> attributes)
+    private void exportAttributes(Hashtable<String, String> attributes)
     {
         ElementsCollection attributeKeys = $$("#viewad-details .attributelist--key").shouldHave(sizeGreaterThanOrEqual(3));
         ElementsCollection attributeValues = $$("#viewad-details .attributelist--value").shouldHave(sizeGreaterThanOrEqual(3));
@@ -110,7 +113,7 @@ public class AdDetailPage extends BrowsingPage
         }
     }
 
-    private void pullImages(String id, List<String> images)
+    private void exportImages(String id, List<String> images)
     {
         // Some validation
         SelenideElement imageContainer = $("#viewad-lightbox").shouldBe(visible);
@@ -146,7 +149,12 @@ public class AdDetailPage extends BrowsingPage
             catch (IOException e)
             {
                 System.out.print("Failed to download image from " + imageUrl);
-                e.printStackTrace();
+                System.out.print("Error was: " + e.getMessage());
+                
+                if(Context.get().getConfiguration().projectDebug())
+                {
+                    e.printStackTrace();
+                }
             }
         }
 

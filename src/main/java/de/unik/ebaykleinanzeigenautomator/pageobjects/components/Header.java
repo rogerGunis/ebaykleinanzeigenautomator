@@ -11,6 +11,7 @@ import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.Homepage;
 import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.LoginPage;
 import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.LogoutPage;
 import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.ManagedAdsPage;
+import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.PostAdSelectCategoryPage;
 
 public class Header extends Component
 {
@@ -45,6 +46,13 @@ public class Header extends Component
         validateIsLoggedOut();
 
         return new LogoutPage();
+    }
+    
+    public PostAdSelectCategoryPage clickPostAd()
+    {
+        $("#site-mainnav-postad-link").shouldBe(visible).scrollTo().click();
+        
+        return new PostAdSelectCategoryPage();
     }
 
     public ManagedAdsPage clickManagedAds()

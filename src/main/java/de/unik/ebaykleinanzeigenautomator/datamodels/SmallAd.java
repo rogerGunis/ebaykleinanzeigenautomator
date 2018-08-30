@@ -16,6 +16,8 @@ public class SmallAd
     public String creationDate = "";
 
     public String id = "";
+    
+    public boolean isOffer = true;
 
     public String title = "";
 
@@ -57,6 +59,7 @@ public class SmallAd
         smallAd.location = jsonObject.getString("location");
         smallAd.creationDate = jsonObject.getString("creationDate");
         smallAd.id = jsonObject.getString("id");
+        smallAd.isOffer = jsonObject.getBoolean("isOffer");
         smallAd.title = jsonObject.getString("title");
         smallAd.content = jsonObject.getString("content");
         smallAd.price = jsonObject.getString("price");
@@ -97,6 +100,7 @@ public class SmallAd
         jsonObject.put("location", location);
         jsonObject.put("creationDate", creationDate);
         jsonObject.put("id", id);
+        jsonObject.put("isOffer", isOffer);
         jsonObject.put("title", title);
         jsonObject.put("content", content);
         jsonObject.put("price", price);
