@@ -116,6 +116,7 @@ public class ManagedAdsPage extends BrowsingPage
             // Check if we need to page
             if(i == itemCount)
             {
+                // TODO check sibling locator
                 SelenideElement paginationNext = $(".pagination-pages > .pagination-current~a.pagination-page");
                 if(paginationNext.is(visible))
                 {
@@ -124,6 +125,7 @@ public class ManagedAdsPage extends BrowsingPage
                     // Get page number of next page
                     String pageNumber = paginationNext.getAttribute("data-page");
                     
+                    // TODO check click - sometimes not executed :(
                     // Go to next page
                     paginationNext.shouldBe(visible).scrollTo().click();
                     
