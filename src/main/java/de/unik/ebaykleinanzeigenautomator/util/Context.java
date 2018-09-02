@@ -106,13 +106,13 @@ public class Context
         return account;
     }
 
-    public String getWorkingDirectory(String sessionIdentifier)
+    public String getWorkingDirectoryPath()
     {
-        return Context.get().getConfiguration().projectDataDirectory() + "/" + sessionIdentifier;
+       return Context.get().getConfiguration().projectDataDirectory() + "/" + Context.get().getSessionIdentifier() + "/";
     }
 
-    public String getWorkingDirectory()
+    public String getWorkingFilePath()
     {
-        return getWorkingDirectory(Context.get().getSessionIdentifier());
+       return getWorkingDirectoryPath() + Context.get().getConfiguration().projectDataFile();
     }
 }

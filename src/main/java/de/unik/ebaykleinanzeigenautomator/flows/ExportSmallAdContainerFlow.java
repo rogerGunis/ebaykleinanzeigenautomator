@@ -42,7 +42,7 @@ public class ExportSmallAdContainerFlow
         }
         catch(Throwable t)
         {
-            System.out.println("Failed to export small ad container");
+            System.out.println("Failed to export small ads");
             System.out.println("Error was: " + t.getMessage());
             
             if(Context.get().getConfiguration().projectDebug())

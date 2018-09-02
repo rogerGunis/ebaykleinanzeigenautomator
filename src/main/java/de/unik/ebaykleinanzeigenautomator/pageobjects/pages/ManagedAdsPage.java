@@ -1,6 +1,7 @@
 package de.unik.ebaykleinanzeigenautomator.pageobjects.pages;
 
 import static com.codeborne.selenide.Condition.attribute;
+import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Condition.exist;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
@@ -12,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 
 import com.codeborne.selenide.CollectionCondition;
+import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 
 import de.unik.ebaykleinanzeigenautomator.datamodels.SmallAd;
@@ -34,27 +36,27 @@ public class ManagedAdsPage extends BrowsingPage
 
     public void activateAllSmallAds()
     {
-        processSmallAds("Activating", null, s -> isInactive(s), s -> activateSmallAd(s), false);
+        processSmallAds("Activated", null, s -> isInactive(s), s -> activateSmallAd(s), false);
     }
 
     public void deactivateAllSmallAds()
     {
-        processSmallAds("Dectivating", null, s -> isActive(s), s -> deactivateSmallAd(s), false);
+        processSmallAds("Deactivated", null, s -> isActive(s), s -> deactivateSmallAd(s), false);
     }
 
     public void deleteAllInactiveSmallAds()
     {
-        processSmallAds("Deleting", null, s -> isInactive(s), s -> deleteSmallAd(s), true);
+        processSmallAds("Deleted", null, s -> isInactive(s), s -> deleteSmallAd(s), true);
     }
 
     public void deleteAllActiveSmallAds()
     {
-        processSmallAds("Deleting", null, s -> isActive(s), s -> deleteSmallAd(s), true);
+        processSmallAds("Deleted", null, s -> isActive(s), s -> deleteSmallAd(s), true);
     }
 
     public void exportAllSmallAds(SmallAdContainer smallAdContainer)
     {
-        processSmallAds("Exporting", smallAdContainer, s -> { return true; }, s -> exportSmallAd(s), false);
+        processSmallAds("Exported", smallAdContainer, s -> { return true; }, s -> exportSmallAd(s), false);
     }
 
     private void processSmallAds(String operation, SmallAdContainer smallAdContainer, Predicate<SelenideElement> predicate, Function<SelenideElement, SmallAd> function, boolean modifiesItemList)
@@ -74,9 +76,6 @@ public class ManagedAdsPage extends BrowsingPage
             // Check if we need to apply our function to this element
             if (predicate.test(currentSmallAdElement))
             {
-                // Print status
-                System.out.println(operation + " '" + currentSmallAdElement.find(".manageaditem-ad a").shouldBe(visible).text() + "' (" + (i + 1) + "/" + itemCount + ")");
-
                 if (smallAdContainer != null)
                 {
                     // Execute function and collect
@@ -87,6 +86,9 @@ public class ManagedAdsPage extends BrowsingPage
                     // Execute only
                     function.apply(currentSmallAdElement);
                 }
+
+                // Print status
+                System.out.println(operation + " '" + currentSmallAdElement.find(".manageaditem-ad a").shouldBe(visible).text() + "'");
 
                 // Indicate that we could execute our operation at least once
                 applied = true;
@@ -109,6 +111,35 @@ public class ManagedAdsPage extends BrowsingPage
             {
                 // Increase counter since nothing happened anyway
                 i++;
+            }
+            
+            // Check if we need to page
+            if(i == itemCount)
+            {
+                SelenideElement paginationNext = $(".pagination-pages > .pagination-current~a.pagination-page");
+                if(paginationNext.is(visible))
+                {
+                    System.out.println("Before Pagination i = " + i + ", itemCount = " + itemCount);
+                    
+                    // Get page number of next page
+                    String pageNumber = paginationNext.getAttribute("data-page");
+                    
+                    // Go to next page
+                    paginationNext.shouldBe(visible).scrollTo().click();
+                    
+                    // Wait for page number to show up as current page
+                    $(".pagination-pages > .pagination-current").shouldHave(exactText(pageNumber));
+                    
+                    // Retrieve new item list information and reset counter
+                    itemCount = itemList.findAll("li.cardbox").size();
+                    i = 0;
+                    
+                    System.out.println("After Pagination i = " + i + ", itemCount = " + itemCount);
+                }
+                else
+                {
+                    System.out.println("No Pagination i = " + i + ", itemCount = " + itemCount);
+                }
             }
         }
 
@@ -208,7 +239,7 @@ public class ManagedAdsPage extends BrowsingPage
         AdDetailsPage adDetailPage = new AdDetailsPage();
         adDetailPage.exportAdDetails(smallAd);
 
-        // Leave small ad details page
-        adDetailPage.header.clickManagedAds();
+        // Go back to small ad overview (keeps pagination in tact)
+        Selenide.back();
     }
 }

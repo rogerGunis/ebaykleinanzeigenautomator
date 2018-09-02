@@ -120,7 +120,7 @@ public class AdDetailsPage extends BrowsingPage
         ElementsCollection imageElements = imageContainer.findAll(".ad-image-wrapper .ad-image > img").shouldHave(CollectionCondition.sizeGreaterThan(0));
 
         // Switch to data download folder
-        com.codeborne.selenide.Configuration.reportsFolder = Context.get().getWorkingDirectory();
+        com.codeborne.selenide.Configuration.reportsFolder = Context.get().getWorkingDirectoryPath();
 
         // Loop through all available images
         for (int i = 0; i < imageElements.size(); i++)

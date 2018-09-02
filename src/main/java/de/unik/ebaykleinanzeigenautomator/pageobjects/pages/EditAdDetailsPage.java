@@ -6,9 +6,12 @@ import static com.codeborne.selenide.Condition.exist;
 import static com.codeborne.selenide.Condition.matchText;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
 
+import java.io.File;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 
 import org.openqa.selenium.By;
 
@@ -16,6 +19,7 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 
 import de.unik.ebaykleinanzeigenautomator.datamodels.SmallAd;
+import de.unik.ebaykleinanzeigenautomator.util.Context;
 
 public class EditAdDetailsPage extends BrowsingPage
 {
@@ -34,6 +38,7 @@ public class EditAdDetailsPage extends BrowsingPage
         setTitle(smallAd);
         setContent(smallAd);
         setPriceIfPossible(smallAd);
+        uploadImagesIfPossible(smallAd);
         
         return clickSubmit();
     }
@@ -105,6 +110,19 @@ public class EditAdDetailsPage extends BrowsingPage
                     $("input#priceType2[value='NEGOTIABLE']").shouldBe(visible).scrollTo().setSelected(true);    
                 }
             }
+        }
+    }
+    
+    public void uploadImagesIfPossible(SmallAd smallAd)
+    {
+        SelenideElement uploadElement = $("input[id^='html5'][type='file']").should(exist);
+        List<String> images = smallAd.images;
+
+        for(int i=0; i<images.size(); i++)
+        {
+            // Upload and wait for each image
+            uploadElement.uploadFile(new File(Context.get().getWorkingDirectoryPath() + images.get(i)));
+            $$("#j-pictureupload-thumbnails img").shouldHaveSize(i + 1);
         }
     }
     

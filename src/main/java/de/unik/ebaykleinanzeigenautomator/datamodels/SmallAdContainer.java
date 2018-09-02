@@ -18,14 +18,27 @@ import de.unik.ebaykleinanzeigenautomator.util.Context;
 public class SmallAdContainer
 {
     public String contact = "";
+    
+    public String sessionIdentifier = "";
 
     public List<SmallAd> smallAds = new ArrayList<SmallAd>();
+    
+    public SmallAdContainer()
+    {
+        this(Context.get().getSessionIdentifier());
+    }
+
+    public SmallAdContainer(String sessionIdentifier)
+    {
+        this.sessionIdentifier = sessionIdentifier;
+    }
 
     public void fromJSON(JSONObject jsonObject) throws ParseException
     {
         JSONArray jsonArray = jsonObject.getJSONArray("smallAds");
 
-        contact = jsonObject.getString("contact");    
+        contact = jsonObject.getString("contact");
+        sessionIdentifier = jsonObject.getString("sessionIdentifier");
         
         for(int i=0; i<jsonArray.length(); i++)
         {
@@ -50,6 +63,7 @@ public class SmallAdContainer
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("contact", contact);
+        jsonObject.put("sessionIdentifier", sessionIdentifier);
         jsonObject.put("smallAds", jsonArray);
 
         return jsonObject;
@@ -60,85 +74,67 @@ public class SmallAdContainer
         return toJson().toString(4);
     }
 
-    public boolean readFromDisk()
+    public boolean readFromDisk(String inputPath)
     {
-        return readFromDisk(Context.get().getSessionIdentifier());
-    }
-
-    public boolean readFromDisk(String sessionIdentifier)
-    {
-        Path inputFilePath = new File(Context.get().getWorkingDirectory(sessionIdentifier) + "/" + Context.get().getConfiguration().projectDataFile()).toPath();
-        if (Files.exists(inputFilePath))
+        Path inputFilePath = new File(inputPath).toPath();
+        String jsonString = null;
+        try
         {
-            String jsonString = null;
-            try
-            {
-                jsonString = new String(Files.readAllBytes(inputFilePath), StandardCharsets.UTF_8);
-            }
-            catch (IOException e)
-            {
-                System.out.println("Failed to read file '" + inputFilePath + "'");
-                System.out.println("Error was: " + e.getMessage());
-                
-                if(Context.get().getConfiguration().projectDebug())
-                {
-                    e.printStackTrace();
-                }
-                
-                return false;
-            }
-
-            try
-            {
-                fromJSON(new JSONObject(jsonString));
-            }
-            catch (Exception e)
-            {
-                System.out.println("Failed to interpret file '" + inputFilePath + "'");
-                System.out.println("Error was: " + e.getMessage());
-                
-                if(Context.get().getConfiguration().projectDebug())
-                {
-                    e.printStackTrace();
-                }
-                
-                return false;
-            }
+            jsonString = new String(Files.readAllBytes(inputFilePath), StandardCharsets.UTF_8);
         }
-        else
+        catch (IOException e)
         {
-            System.out.println("Failed to find file '" + inputFilePath + "'");
+            System.out.println("Failed to read file '" + inputFilePath + "'");
+            System.out.println("Error was: " + e.getMessage());
+            
+            if(Context.get().getConfiguration().projectDebug())
+            {
+                e.printStackTrace();
+            }
+            
+            return false;
+        }
+        
+        try
+        {
+            fromJSON(new JSONObject(jsonString));
+        }
+        catch (Exception e)
+        {
+            System.out.println("Failed to interpret file '" + inputFilePath + "'");
+            System.out.println("Error was: " + e.getMessage());
+            
+            if(Context.get().getConfiguration().projectDebug())
+            {
+                e.printStackTrace();
+            }
             
             return false;
         }
         
         return true;
     }
-
-    public boolean writeToDisk()
+    
+    public boolean writeToDisk(String outputPath)
     {
-        Path workingDirectoryPath = new File(Context.get().getWorkingDirectory()).toPath();
-        if (!Files.exists(workingDirectoryPath))
+        Path outputFilePath = new File(outputPath).toPath();
+        try
         {
-            try
+            Files.createDirectories(outputFilePath.getParent());
+        }
+        catch (IOException e)
+        {
+            System.out.println("Failed to create directory '" + outputFilePath.getParent() + "'");
+            System.out.println("Error was: " + e.getMessage());
+            
+            if(Context.get().getConfiguration().projectDebug())
             {
-                Files.createDirectories(workingDirectoryPath);
+                e.printStackTrace();
             }
-            catch (IOException e)
-            {
-                System.out.println("Failed to create directory '" + workingDirectoryPath + "'");
-                System.out.println("Error was: " + e.getMessage());
-                
-                if(Context.get().getConfiguration().projectDebug())
-                {
-                    e.printStackTrace();
-                }
 
-                return false;
-            }
+            return false;
         }
 
-        Path outputFilePath = workingDirectoryPath.resolve(Context.get().getConfiguration().projectDataFile());
         try
         {
             Files.write(outputFilePath, this.toString().getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);

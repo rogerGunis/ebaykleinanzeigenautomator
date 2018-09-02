@@ -1,7 +1,6 @@
 package de.unik.ebaykleinanzeigenautomator;
 
-import de.unik.ebaykleinanzeigenautomator.datamodels.SmallAdContainer;
-import de.unik.ebaykleinanzeigenautomator.flows.ImportSmallAdContainerFlow;
+import de.unik.ebaykleinanzeigenautomator.flows.ChangeStatusOfAllSmallAdsFlow;
 import de.unik.ebaykleinanzeigenautomator.util.Context;
 
 public class App
@@ -10,6 +9,16 @@ public class App
     {
         Context.initialize();
 
+        if(!new ChangeStatusOfAllSmallAdsFlow(false).run())
+        {
+            return;
+        }
+        
+        if(!new ChangeStatusOfAllSmallAdsFlow(true).run())
+        {
+            return;
+        }
+
         /*
         ExportSmallAdContainerFlow exportFlow = new ExportSmallAdContainerFlow();
         if(!exportFlow.run())
@@ -17,17 +26,22 @@ public class App
             return;
         }
         
-        if(!exportFlow.getSmallAdContainer().writeToDisk())
+        if(!exportFlow.getSmallAdContainer().writeToDisk(Context.get().getWorkingFilePath()))
         {
             return;
         }
         //*/
 
-        //*
+        /*
         SmallAdContainer smallAdContainer = new SmallAdContainer();
-        if(smallAdContainer.readFromDisk("1535657212486"))
+        if(!smallAdContainer.readFromDisk(Context.get().getWorkingFilePath()))
         {
-            new ImportSmallAdContainerFlow(smallAdContainer).run();
+            return;
+        }
+        
+        if(!new ImportSmallAdContainerFlow(smallAdContainer).run())
+        {
+            return;
         }
         //*/
 
