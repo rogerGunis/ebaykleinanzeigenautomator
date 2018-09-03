@@ -116,16 +116,13 @@ public class ManagedAdsPage extends BrowsingPage
             // Check if we need to page
             if(i == itemCount)
             {
-                // TODO check sibling locator
+                // Check for pagination
                 SelenideElement paginationNext = $(".pagination-pages > .pagination-current~a.pagination-page");
                 if(paginationNext.is(visible))
                 {
-                    System.out.println("Before Pagination i = " + i + ", itemCount = " + itemCount);
-                    
                     // Get page number of next page
                     String pageNumber = paginationNext.getAttribute("data-page");
                     
-                    // TODO check click - sometimes not executed :(
                     // Go to next page
                     paginationNext.shouldBe(visible).scrollTo().click();
                     
@@ -135,12 +132,6 @@ public class ManagedAdsPage extends BrowsingPage
                     // Retrieve new item list information and reset counter
                     itemCount = itemList.findAll("li.cardbox").size();
                     i = 0;
-                    
-                    System.out.println("After Pagination i = " + i + ", itemCount = " + itemCount);
-                }
-                else
-                {
-                    System.out.println("No Pagination i = " + i + ", itemCount = " + itemCount);
                 }
             }
         }

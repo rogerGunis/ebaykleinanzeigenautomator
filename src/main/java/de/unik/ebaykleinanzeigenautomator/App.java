@@ -1,6 +1,6 @@
 package de.unik.ebaykleinanzeigenautomator;
 
-import de.unik.ebaykleinanzeigenautomator.flows.ChangeStatusOfAllSmallAdsFlow;
+import de.unik.ebaykleinanzeigenautomator.flows.ExportSmallAdContainerFlow;
 import de.unik.ebaykleinanzeigenautomator.util.Context;
 
 public class App
@@ -9,7 +9,7 @@ public class App
     {
         Context.initialize();
 
-        //*
+        /*
         if(!new ChangeStatusOfAllSmallAdsFlow(false).run())
         {
             return;
@@ -21,7 +21,7 @@ public class App
         }
         //*/
 
-        /*
+        //*
         ExportSmallAdContainerFlow exportFlow = new ExportSmallAdContainerFlow();
         if(!exportFlow.run())
         {
