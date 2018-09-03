@@ -9,6 +9,7 @@ public class App
     {
         Context.initialize();
 
+        //*
         if(!new ChangeStatusOfAllSmallAdsFlow(false).run())
         {
             return;
@@ -18,6 +19,7 @@ public class App
         {
             return;
         }
+        //*/
 
         /*
         ExportSmallAdContainerFlow exportFlow = new ExportSmallAdContainerFlow();

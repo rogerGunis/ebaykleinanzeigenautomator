@@ -62,7 +62,7 @@ public class AdDetailsPage extends BrowsingPage
         if ($("#viewad-price").exists())
         {
             smallAd.price = $("#viewad-details section.l-container meta[itemprop='price'][content]").should(exist).getAttribute("content").trim();
-            smallAd.price.replaceAll(".00", "");
+            smallAd.price = smallAd.price.replaceAll("\\.00", "");
 
             if (!smallAd.price.isEmpty())
             {
