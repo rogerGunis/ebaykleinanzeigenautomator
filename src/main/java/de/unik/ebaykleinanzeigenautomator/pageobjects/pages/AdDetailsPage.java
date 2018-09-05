@@ -151,8 +151,8 @@ public class AdDetailsPage extends BrowsingPage
             {
                 System.out.print("Failed to download image from " + imageUrl);
                 System.out.print("Error was: " + e.getMessage());
-                
-                if(Context.get().getConfiguration().projectDebug())
+
+                if (Context.get().getConfiguration().projectDebug())
                 {
                     e.printStackTrace();
                 }

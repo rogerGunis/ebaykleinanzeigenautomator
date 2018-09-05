@@ -16,7 +16,7 @@ public class SmallAd
     public String creationDate = "";
 
     public String id = "";
-    
+
     public boolean isOffer = true;
 
     public String title = "";
@@ -38,7 +38,7 @@ public class SmallAd
     public List<String> categories = new ArrayList<String>();
 
     public Hashtable<String, String> attributes = new Hashtable<String, String>();
-    
+
     public boolean isValid()
     {
         boolean valid = !title.isEmpty() && !content.isEmpty() && (categories.size() >= 2);
@@ -54,7 +54,7 @@ public class SmallAd
     public static SmallAd fromJSON(JSONObject jsonObject)
     {
         SmallAd smallAd = new SmallAd();
-        
+
         smallAd.isActive = jsonObject.getBoolean("isActive");
         smallAd.location = jsonObject.getString("location");
         smallAd.creationDate = jsonObject.getString("creationDate");
@@ -67,28 +67,28 @@ public class SmallAd
         smallAd.isForFree = jsonObject.getBoolean("isForFree");
         smallAd.hasNoPrice = jsonObject.getBoolean("hasNoPrice");
         smallAd.useContact = jsonObject.getBoolean("useContact");
-        
+
         JSONArray jsonArray = jsonObject.getJSONArray("images");
-        for(int i=0; i<jsonArray.length(); i++)
+        for (int i = 0; i < jsonArray.length(); i++)
         {
             smallAd.images.add(jsonArray.getString(i));
         }
-        
+
         jsonArray = jsonObject.getJSONArray("categories");
-        for(int i=0; i<jsonArray.length(); i++)
+        for (int i = 0; i < jsonArray.length(); i++)
         {
             smallAd.categories.add(jsonArray.getString(i));
-        }        
+        }
 
         jsonArray = jsonObject.getJSONArray("attributes");
-        for(int i=0; i<jsonArray.length(); i++)
+        for (int i = 0; i < jsonArray.length(); i++)
         {
             JSONObject attribute = jsonArray.getJSONObject(i);
             String key = attribute.keys().next();
-            
+
             smallAd.attributes.put(key, attribute.getString(key));
         }
-        
+
         return smallAd;
     }
 

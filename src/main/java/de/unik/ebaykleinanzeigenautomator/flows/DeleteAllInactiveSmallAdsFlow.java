@@ -13,29 +13,29 @@ public class DeleteAllInactiveSmallAdsFlow
         {
             Homepage homepage = new OpenHomepageFlow().run();
             LoginPage loginPage = homepage.header.clickLoginLink();
-    
+
             loginPage.fillLoginDetails();
             homepage = loginPage.clickLogin();
-    
+
             ManagedAdsPage managedAdsPage = homepage.header.clickManagedAds();
-    
+
             managedAdsPage.deleteAllInactiveSmallAds();
-    
+
             managedAdsPage.header.clickLogoutLink();
         }
-        catch(Throwable t)
+        catch (Throwable t)
         {
             System.out.println("Failed to delete all inactive small ads");
             System.out.println("Error was: " + t.getMessage());
-            
-            if(Context.get().getConfiguration().projectDebug())
+
+            if (Context.get().getConfiguration().projectDebug())
             {
                 t.printStackTrace();
             }
-            
+
             return false;
         }
-    
+
         return true;
     }
 }

@@ -85,7 +85,7 @@ public class Context
 
     public void resetSessionIdentifier(String identifier)
     {
-        if(identifier == null)
+        if (identifier == null)
         {
             sessionIdentifier = "" + System.currentTimeMillis();
         }
@@ -108,11 +108,11 @@ public class Context
 
     public String getWorkingDirectoryPath()
     {
-       return Context.get().getConfiguration().projectDataDirectory() + "/" + Context.get().getSessionIdentifier() + "/";
+        return Context.get().getConfiguration().projectDataDirectory() + "/" + Context.get().getSessionIdentifier() + "/";
     }
 
     public String getWorkingFilePath()
     {
-       return getWorkingDirectoryPath() + Context.get().getConfiguration().projectDataFile();
+        return getWorkingDirectoryPath() + Context.get().getConfiguration().projectDataFile();
     }
 }

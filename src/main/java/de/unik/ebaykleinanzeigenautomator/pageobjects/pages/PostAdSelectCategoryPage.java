@@ -25,31 +25,31 @@ public class PostAdSelectCategoryPage extends BrowsingPage
 
         $("#postad-step1").should(exist);
     }
-    
+
     public void selectCategories(SmallAd smallAd)
     {
         List<String> categories = smallAd.categories;
         SelenideElement selectedCategory = null;
         int i = 0;
-        
-        for(; i<categories.size(); i++)
+
+        for (; i < categories.size(); i++)
         {
             selectedCategory = selectCategory(categories.get(i), i);
         }
-        
-        while(!selectedCategory.parent().has(cssClass("is-leaf")))
+
+        while (!selectedCategory.parent().has(cssClass("is-leaf")))
         {
             selectedCategory = selectCategoryViaAttributes(smallAd.attributes, i++);
         }
     }
-    
+
     public EditAdDetailsPage clickNext()
     {
         $("#postad-step1-frm button").shouldBe(visible).click();
-        
+
         return new EditAdDetailsPage();
     }
-    
+
     private SelenideElement selectCategory(String categoryName, int columnIndex)
     {
         // Get categories of column
@@ -58,14 +58,14 @@ public class PostAdSelectCategoryPage extends BrowsingPage
         // Get the category with given name
         SelenideElement category = categories.find(exactText(categoryName)).shouldBe(visible);
         category.scrollTo().click();
-        
+
         // Validate that the category was set
         category.parent().shouldHave(cssClass("is-active"));
-        
+
         // Return selected category
         return category;
     }
-    
+
     private SelenideElement selectCategoryViaAttributes(Hashtable<String, String> attributes, int columnIndex)
     {
         // Get categories of column
@@ -74,10 +74,10 @@ public class PostAdSelectCategoryPage extends BrowsingPage
         // Get column headline which acts as key, remove unnecessary characters
         String attributeKey = getCategoryColumnHeadline(columnIndex);
         attributeKey = attributeKey.replace("*", "").trim();
-        
+
         // Get value mapped to attribute key
         String attributeValue = attributes.get(attributeKey);
-        if(attributeValue == null)
+        if (attributeValue == null)
         {
             throw new RuntimeException("Failed to find attribute category '" + attributeKey + "'");
         }
@@ -85,36 +85,36 @@ public class PostAdSelectCategoryPage extends BrowsingPage
         // Get the category with given name
         SelenideElement category = categories.find(exactText(attributeValue)).shouldBe(visible);
         category.scrollTo().click();
-        
+
         // Validate that the category was set
         category.parent().shouldHave(cssClass("is-active"));
-        
+
         // Return selected category
         return category;
     }
-    
+
     private ElementsCollection getCategoriesOfColumn(int columnIndex)
     {
         // Get category list column with given index
         SelenideElement categoryListColumn = getCategoryColumn(columnIndex);
-        
+
         // Get all categories of category column
         ElementsCollection categories = categoryListColumn.findAll("ul.category-selection-list li.category-selection-list-item > a.category-selection-list-item-link");
         categories.shouldHave(CollectionCondition.sizeGreaterThan(0));
-        
+
         // Return all categories of column with index
         return categories;
     }
-    
+
     private String getCategoryColumnHeadline(int columnIndex)
     {
         // Get category list column with given index
         SelenideElement categoryListColumn = getCategoryColumn(columnIndex);
-        
+
         // Return headline of category column
         return categoryListColumn.find("h2.sectionheadline").should(exist).text();
     }
-    
+
     private SelenideElement getCategoryColumn(int columnIndex)
     {
         // Get all category columns and return the one with the given index

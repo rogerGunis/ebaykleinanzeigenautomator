@@ -16,7 +16,7 @@ import de.unik.ebaykleinanzeigenautomator.util.Context;
 public class ImportSmallAdContainerFlow
 {
     private SmallAdContainer smallAdContainer = null;
-    
+
     public ImportSmallAdContainerFlow(SmallAdContainer smallAdContainer)
     {
         this.smallAdContainer = smallAdContainer;
@@ -28,55 +28,55 @@ public class ImportSmallAdContainerFlow
         {
             Homepage homepage = new OpenHomepageFlow().run();
             LoginPage loginPage = homepage.header.clickLoginLink();
-    
+
             loginPage.fillLoginDetails();
             homepage = loginPage.clickLogin();
 
             // Loop through small ad container
             Iterator<SmallAd> smallAdsIterator = smallAdContainer.smallAds.iterator();
             boolean imported = false;
-            
-            while(smallAdsIterator.hasNext())
+
+            while (smallAdsIterator.hasNext())
             {
                 SmallAd smallAd = smallAdsIterator.next();
-                if(smallAd.isActive)
+                if (smallAd.isActive)
                 {
                     // Post active small ads
                     PostAdSelectCategoryPage postAdSelectCategoryPage = homepage.header.clickPostAd();
                     postAdSelectCategoryPage.selectCategories(smallAd);
-                    
-                    EditAdDetailsPage editAdDetailsPage = postAdSelectCategoryPage.clickNext();  
+
+                    EditAdDetailsPage editAdDetailsPage = postAdSelectCategoryPage.clickNext();
                     PostAdConfirmPage postAdConfirmPage = editAdDetailsPage.publishAd(smallAd);
-                    
+
                     System.out.println("Imported '" + smallAd.title + "'");
-                    
-                    // With each posted ad wait a little to minimize account lock risk due to automation 
+
+                    // With each posted ad wait a little to minimize account lock risk due to automation
                     Selenide.sleep(Context.get().getConfiguration().projectAdImportDelay());
-                    
+
                     homepage = postAdConfirmPage.header.clickHome();
-                    
+
                     imported = true;
                 }
             }
-    
+
             homepage.header.clickLogoutLink();
-            
-            if(!imported)
+
+            if (!imported)
             {
                 System.out.println("No applicable small ads found in account '" + Context.get().getAccount().username + "'");
             }
-            
+
         }
-        catch(Throwable t)
+        catch (Throwable t)
         {
             System.out.println("Failed to import small ads");
             System.out.println("Error was: " + t.getMessage());
-            
-            if(Context.get().getConfiguration().projectDebug())
+
+            if (Context.get().getConfiguration().projectDebug())
             {
                 t.printStackTrace();
             }
-            
+
             return false;
         }
 

@@ -20,7 +20,7 @@ public class BrowsingPage extends PageObject
     {
         // With each new page we wait a little to minimize risk of account lock due to automation
         Selenide.sleep(Context.get().getConfiguration().projectGeneralDelay());
-        
+
         header.validateComponentIsAvailable();
     }
 }

@@ -62,10 +62,10 @@ public interface Configuration extends Config
 
     @Key("project.downloadImages")
     public boolean projectDownloadImages();
-    
+
     @Key("project.generalDelay")
     public long projectGeneralDelay();
-    
+
     @Key("project.adImportDelay")
     public long projectAdImportDelay();
 }

@@ -20,12 +20,12 @@ public class ChangeStatusOfAllSmallAdsFlow
         {
             Homepage homepage = new OpenHomepageFlow().run();
             LoginPage loginPage = homepage.header.clickLoginLink();
-    
+
             loginPage.fillLoginDetails();
             homepage = loginPage.clickLogin();
-    
+
             ManagedAdsPage managedAdsPage = homepage.header.clickManagedAds();
-    
+
             if (activate)
             {
                 managedAdsPage.activateAllSmallAds();
@@ -34,22 +34,22 @@ public class ChangeStatusOfAllSmallAdsFlow
             {
                 managedAdsPage.deactivateAllSmallAds();
             }
-    
+
             managedAdsPage.header.clickLogoutLink();
         }
-        catch(Throwable t)
+        catch (Throwable t)
         {
             System.out.println("Failed to " + (activate ? "activate" : "deactivate") + " small ads");
             System.out.println("Error was: " + t.getMessage());
-            
-            if(Context.get().getConfiguration().projectDebug())
+
+            if (Context.get().getConfiguration().projectDebug())
             {
                 t.printStackTrace();
             }
-            
+
             return false;
         }
-    
+
         return true;
     }
 }

@@ -10,42 +10,29 @@ public class App
         Context.initialize();
 
         /*
-        if(!new ChangeStatusOfAllSmallAdsFlow(false).run())
-        {
-            return;
-        }
-        
-        if(!new ChangeStatusOfAllSmallAdsFlow(true).run())
-        {
-            return;
-        }
-        //*/
+         * if(!new ChangeStatusOfAllSmallAdsFlow(false).run()) { return; }
+         * 
+         * if(!new ChangeStatusOfAllSmallAdsFlow(true).run()) { return; } //
+         */
 
-        //*
+        // *
         ExportSmallAdContainerFlow exportFlow = new ExportSmallAdContainerFlow();
-        if(!exportFlow.run())
+        if (!exportFlow.run())
         {
             return;
         }
-        
-        if(!exportFlow.getSmallAdContainer().writeToDisk(Context.get().getWorkingFilePath()))
+
+        if (!exportFlow.getSmallAdContainer().writeToDisk(Context.get().getWorkingFilePath()))
         {
             return;
         }
-        //*/
+        // */
 
         /*
-        SmallAdContainer smallAdContainer = new SmallAdContainer();
-        if(!smallAdContainer.readFromDisk(Context.get().getWorkingFilePath()))
-        {
-            return;
-        }
-        
-        if(!new ImportSmallAdContainerFlow(smallAdContainer).run())
-        {
-            return;
-        }
-        //*/
+         * SmallAdContainer smallAdContainer = new SmallAdContainer(); if(!smallAdContainer.readFromDisk(Context.get().getWorkingFilePath())) { return; }
+         * 
+         * if(!new ImportSmallAdContainerFlow(smallAdContainer).run()) { return; } //
+         */
 
         System.out.println("Everything ok");
     }

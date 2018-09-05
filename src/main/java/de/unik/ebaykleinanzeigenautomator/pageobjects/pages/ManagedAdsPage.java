@@ -112,23 +112,23 @@ public class ManagedAdsPage extends BrowsingPage
                 // Increase counter since nothing happened anyway
                 i++;
             }
-            
+
             // Check if we need to page
-            if(i == itemCount)
+            if (i == itemCount)
             {
                 // Check for pagination
                 SelenideElement paginationNext = $(".pagination-pages > .pagination-current~a.pagination-page");
-                if(paginationNext.is(visible))
+                if (paginationNext.is(visible))
                 {
                     // Get page number of next page
                     String pageNumber = paginationNext.getAttribute("data-page");
-                    
+
                     // Go to next page
                     paginationNext.shouldBe(visible).scrollTo().click();
-                    
+
                     // Wait for page number to show up as current page
                     $(".pagination-pages > .pagination-current").shouldHave(exactText(pageNumber));
-                    
+
                     // Retrieve new item list information and reset counter
                     itemCount = itemList.findAll("li.cardbox").size();
                     i = 0;

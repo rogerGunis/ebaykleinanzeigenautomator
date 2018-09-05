@@ -47,11 +47,11 @@ public class Header extends Component
 
         return new LogoutPage();
     }
-    
+
     public PostAdSelectCategoryPage clickPostAd()
     {
         $("#site-mainnav-postad-link").shouldBe(visible).scrollTo().click();
-        
+
         return new PostAdSelectCategoryPage();
     }
 

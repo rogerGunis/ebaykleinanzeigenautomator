@@ -18,11 +18,11 @@ import de.unik.ebaykleinanzeigenautomator.util.Context;
 public class SmallAdContainer
 {
     public String contact = "";
-    
+
     public String sessionIdentifier = "";
 
     public List<SmallAd> smallAds = new ArrayList<SmallAd>();
-    
+
     public SmallAdContainer()
     {
         this(Context.get().getSessionIdentifier());
@@ -39,12 +39,12 @@ public class SmallAdContainer
 
         contact = jsonObject.getString("contact");
         sessionIdentifier = jsonObject.getString("sessionIdentifier");
-        
-        for(int i=0; i<jsonArray.length(); i++)
+
+        for (int i = 0; i < jsonArray.length(); i++)
         {
             SmallAd smallAd = SmallAd.fromJSON(jsonArray.getJSONObject(i));
-            
-            if(smallAd.isValid())
+
+            if (smallAd.isValid())
             {
                 smallAds.add(smallAd);
             }
@@ -68,7 +68,7 @@ public class SmallAdContainer
 
         return jsonObject;
     }
-    
+
     public String toString()
     {
         return toJson().toString(4);
@@ -86,15 +86,15 @@ public class SmallAdContainer
         {
             System.out.println("Failed to read file '" + inputFilePath + "'");
             System.out.println("Error was: " + e.getMessage());
-            
-            if(Context.get().getConfiguration().projectDebug())
+
+            if (Context.get().getConfiguration().projectDebug())
             {
                 e.printStackTrace();
             }
-            
+
             return false;
         }
-        
+
         try
         {
             fromJSON(new JSONObject(jsonString));
@@ -103,18 +103,18 @@ public class SmallAdContainer
         {
             System.out.println("Failed to interpret file '" + inputFilePath + "'");
             System.out.println("Error was: " + e.getMessage());
-            
-            if(Context.get().getConfiguration().projectDebug())
+
+            if (Context.get().getConfiguration().projectDebug())
             {
                 e.printStackTrace();
             }
-            
+
             return false;
         }
-        
+
         return true;
     }
-    
+
     public boolean writeToDisk(String outputPath)
     {
         Path outputFilePath = new File(outputPath).toPath();
@@ -126,8 +126,8 @@ public class SmallAdContainer
         {
             System.out.println("Failed to create directory '" + outputFilePath.getParent() + "'");
             System.out.println("Error was: " + e.getMessage());
-            
-            if(Context.get().getConfiguration().projectDebug())
+
+            if (Context.get().getConfiguration().projectDebug())
             {
                 e.printStackTrace();
             }
@@ -143,15 +143,15 @@ public class SmallAdContainer
         {
             System.out.println("Failed to write file '" + outputFilePath + "'");
             System.out.println("Error was: " + e.getMessage());
-            
-            if(Context.get().getConfiguration().projectDebug())
+
+            if (Context.get().getConfiguration().projectDebug())
             {
                 e.printStackTrace();
             }
-            
+
             return false;
         }
-        
+
         return true;
     }
 }
