@@ -1,17 +1,15 @@
 package de.unik.ebaykleinanzeigenautomator.datamodels;
 
-import de.unik.ebaykleinanzeigenautomator.util.Context;
+import org.apache.commons.lang3.StringUtils;
 
 public class Account
 {
-    public String username;
+    public String username = null;
 
-    public String password;
+    public String password = null;
 
-    public Account()
+    public boolean isInitialized()
     {
-        // Initialize from configuration for now
-        username = Context.get().getConfiguration().accountUsername();
-        password = Context.get().getConfiguration().accountPassword();
+        return !StringUtils.isBlank(username) && !StringUtils.isBlank(password);
     }
 }

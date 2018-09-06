@@ -26,7 +26,7 @@ public class PostAdSelectCategoryPage extends BrowsingPage
         $("#postad-step1").should(exist);
     }
 
-    public void selectCategories(SmallAd smallAd)
+    public void selectCategories(SmallAd smallAd) throws Exception
     {
         List<String> categories = smallAd.categories;
         SelenideElement selectedCategory = null;
@@ -45,7 +45,7 @@ public class PostAdSelectCategoryPage extends BrowsingPage
 
     public EditAdDetailsPage clickNext()
     {
-        $("#postad-step1-frm button").shouldBe(visible).click();
+        $("#postad-step1-frm button").scrollTo().shouldBe(visible).click();
 
         return new EditAdDetailsPage();
     }
@@ -56,8 +56,8 @@ public class PostAdSelectCategoryPage extends BrowsingPage
         ElementsCollection categories = getCategoriesOfColumn(columnIndex);
 
         // Get the category with given name
-        SelenideElement category = categories.find(exactText(categoryName)).shouldBe(visible);
-        category.scrollTo().click();
+        SelenideElement category = categories.find(exactText(categoryName));
+        category.should(exist).scrollTo().shouldBe(visible).click();
 
         // Validate that the category was set
         category.parent().shouldHave(cssClass("is-active"));
@@ -66,7 +66,7 @@ public class PostAdSelectCategoryPage extends BrowsingPage
         return category;
     }
 
-    private SelenideElement selectCategoryViaAttributes(Hashtable<String, String> attributes, int columnIndex)
+    private SelenideElement selectCategoryViaAttributes(Hashtable<String, String> attributes, int columnIndex) throws Exception
     {
         // Get categories of column
         ElementsCollection categories = getCategoriesOfColumn(columnIndex);
@@ -79,12 +79,12 @@ public class PostAdSelectCategoryPage extends BrowsingPage
         String attributeValue = attributes.get(attributeKey);
         if (attributeValue == null)
         {
-            throw new RuntimeException("Failed to find attribute category '" + attributeKey + "'");
+            throw new Exception("Failed to find attribute category " + attributeKey);
         }
 
         // Get the category with given name
-        SelenideElement category = categories.find(exactText(attributeValue)).shouldBe(visible);
-        category.scrollTo().click();
+        SelenideElement category = categories.find(exactText(attributeValue));
+        category.should(exist).scrollTo().shouldBe(visible).click();
 
         // Validate that the category was set
         category.parent().shouldHave(cssClass("is-active"));

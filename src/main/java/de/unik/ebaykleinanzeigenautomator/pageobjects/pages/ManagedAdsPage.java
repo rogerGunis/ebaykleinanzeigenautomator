@@ -1,7 +1,6 @@
 package de.unik.ebaykleinanzeigenautomator.pageobjects.pages;
 
 import static com.codeborne.selenide.Condition.attribute;
-import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Condition.exist;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
@@ -18,10 +17,13 @@ import com.codeborne.selenide.SelenideElement;
 
 import de.unik.ebaykleinanzeigenautomator.datamodels.SmallAd;
 import de.unik.ebaykleinanzeigenautomator.datamodels.SmallAdContainer;
+import de.unik.ebaykleinanzeigenautomator.pageobjects.components.Pagination;
 import de.unik.ebaykleinanzeigenautomator.util.Context;
 
 public class ManagedAdsPage extends BrowsingPage
 {
+    public Pagination pagination = new Pagination();
+
     private SelenideElement managedAdsContent = $("#my-manageads-content");
 
     private SelenideElement itemList = managedAdsContent.$(".itemlist");
@@ -71,7 +73,7 @@ public class ManagedAdsPage extends BrowsingPage
         while (i < itemCount)
         {
             // Re-evaluate elements collection each iteration
-            SelenideElement currentSmallAdElement = itemList.findAll("li.cardbox").get(i).should(exist);
+            SelenideElement currentSmallAdElement = itemList.findAll("li.cardbox").get(i).should(exist).scrollTo();
 
             // Check if we need to apply our function to this element
             if (predicate.test(currentSmallAdElement))
@@ -88,7 +90,7 @@ public class ManagedAdsPage extends BrowsingPage
                 }
 
                 // Print status
-                System.out.println(operation + " '" + currentSmallAdElement.find(".manageaditem-ad a").shouldBe(visible).text() + "'");
+                System.out.println(operation + " " + currentSmallAdElement.find(".manageaditem-ad a").shouldBe(exist).text());
 
                 // Indicate that we could execute our operation at least once
                 applied = true;
@@ -114,58 +116,46 @@ public class ManagedAdsPage extends BrowsingPage
             }
 
             // Check if we need to page
-            if (i == itemCount)
+            if ((i == itemCount) && pagination.isPossible())
             {
-                // Check for pagination
-                SelenideElement paginationNext = $(".pagination-pages > .pagination-current~a.pagination-page");
-                if (paginationNext.is(visible))
-                {
-                    // Get page number of next page
-                    String pageNumber = paginationNext.getAttribute("data-page");
+                pagination.apply();
 
-                    // Go to next page
-                    paginationNext.shouldBe(visible).scrollTo().click();
-
-                    // Wait for page number to show up as current page
-                    $(".pagination-pages > .pagination-current").shouldHave(exactText(pageNumber));
-
-                    // Retrieve new item list information and reset counter
-                    itemCount = itemList.findAll("li.cardbox").size();
-                    i = 0;
-                }
+                // Retrieve new item list information and reset counter
+                itemCount = itemList.findAll("li.cardbox").size();
+                i = 0;
             }
         }
 
         if (!applied)
         {
-            System.out.println("No applicable small ads found in account '" + Context.get().getAccount().username + "'");
+            System.out.println("No applicable small ads found in account " + Context.get().getAccount().username);
         }
     }
 
     private boolean isInactive(SelenideElement smallAdElement)
     {
-        smallAdElement.$("a.managead-listitem-action-activate.is-hidden, a.managead-listitem-action-deactivate.is-hidden").should(exist);
+        smallAdElement.$("a.managead-listitem-action-activate.is-hidden, a.managead-listitem-action-deactivate.is-hidden").should(exist).scrollTo();
 
         return smallAdElement.$("a.managead-listitem-action-activate").is(visible);
     }
 
     private SmallAd activateSmallAd(SelenideElement smallAdElement)
     {
-        smallAdElement.$("a.managead-listitem-action-activate").shouldBe(visible).scrollTo().click();
+        smallAdElement.$("a.managead-listitem-action-activate").should(exist).scrollTo().shouldBe(visible).click();
 
         return null;
     }
 
     private boolean isActive(SelenideElement smallAdElement)
     {
-        smallAdElement.$("a.managead-listitem-action-activate.is-hidden, a.managead-listitem-action-deactivate.is-hidden").should(exist);
+        smallAdElement.$("a.managead-listitem-action-activate.is-hidden, a.managead-listitem-action-deactivate.is-hidden").should(exist).scrollTo();
 
         return smallAdElement.$("a.managead-listitem-action-deactivate").is(visible);
     }
 
     private SmallAd deactivateSmallAd(SelenideElement smallAdElement)
     {
-        smallAdElement.$("a.managead-listitem-action-deactivate").shouldBe(visible).scrollTo().click();
+        smallAdElement.$("a.managead-listitem-action-deactivate").should(exist).scrollTo().shouldBe(visible).click();
 
         return null;
     }
@@ -173,13 +163,13 @@ public class ManagedAdsPage extends BrowsingPage
     private SmallAd deleteSmallAd(SelenideElement smallAdElement)
     {
         // Click delete button
-        smallAdElement.$("a.managead-listitem-action-delete").shouldBe(visible).scrollTo().click();
+        smallAdElement.$("a.managead-listitem-action-delete").should(exist).scrollTo().shouldBe(visible).click();
 
         // Confirm deletion in pop up
-        $("#modal-bulk-delete-ad-sbmt").shouldBe(visible).scrollTo().click();
+        $("#modal-bulk-delete-ad-sbmt").should(exist).scrollTo().shouldBe(visible).click();
 
         // Close confirmation pop up
-        $("#modal-bulk-delete-ad .mfp-close").shouldBe(visible).scrollTo().click();
+        $("#modal-bulk-delete-ad .mfp-close").should(exist).scrollTo().shouldBe(visible).click();
 
         // Expect modal to be hidden
         $("#modal-bulk-delete-ad").shouldNotBe(visible);
@@ -226,7 +216,7 @@ public class ManagedAdsPage extends BrowsingPage
     private void exportSmallAdDetails(SelenideElement smallAdElement, SmallAd smallAd)
     {
         // Open ad detail page
-        smallAdElement.$("section.manageaditem-ad > h2 > a").shouldBe(visible).scrollTo().click();
+        smallAdElement.$("section.manageaditem-ad > h2 > a").should(exist).scrollTo().shouldBe(visible).click();
 
         // Create small ad detail page and export details
         AdDetailsPage adDetailPage = new AdDetailsPage();

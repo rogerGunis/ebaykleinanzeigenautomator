@@ -48,7 +48,7 @@ public class ImportSmallAdContainerFlow
                     EditAdDetailsPage editAdDetailsPage = postAdSelectCategoryPage.clickNext();
                     PostAdConfirmPage postAdConfirmPage = editAdDetailsPage.publishAd(smallAd);
 
-                    System.out.println("Imported '" + smallAd.title + "'");
+                    System.out.println("Imported " + smallAd.title);
 
                     // With each posted ad wait a little to minimize account lock risk due to automation
                     Selenide.sleep(Context.get().getConfiguration().projectAdImportDelay());
@@ -63,7 +63,7 @@ public class ImportSmallAdContainerFlow
 
             if (!imported)
             {
-                System.out.println("No applicable small ads found in account '" + Context.get().getAccount().username + "'");
+                System.out.println("No applicable small ads found in account " + Context.get().getAccount().username);
             }
 
         }

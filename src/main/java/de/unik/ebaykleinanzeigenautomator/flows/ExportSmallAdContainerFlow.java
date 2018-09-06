@@ -22,14 +22,13 @@ public class ExportSmallAdContainerFlow
 
     public boolean run()
     {
-        if (smallAdContainer == null)
-        {
-            System.out.println("Small ad container is not initialized");
-            return false;
-        }
-
         try
         {
+            if (smallAdContainer == null)
+            {
+                throw new Throwable("Small ad container was not initialized");
+            }
+
             Homepage homepage = new OpenHomepageFlow().run();
             LoginPage loginPage = homepage.header.clickLoginLink();
 

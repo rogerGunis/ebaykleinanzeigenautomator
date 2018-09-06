@@ -51,7 +51,7 @@ public class SmallAdContainer
             else
             {
                 String identifier = !smallAd.title.isEmpty() ? smallAd.title : smallAd.id;
-                throw new ParseException("Invalid small ad '" + identifier + "' found", i);
+                throw new ParseException("Invalid small ad " + identifier + " found", i);
             }
         }
     }
@@ -84,7 +84,7 @@ public class SmallAdContainer
         }
         catch (IOException e)
         {
-            System.out.println("Failed to read file '" + inputFilePath + "'");
+            System.out.println("Failed to read file from " + inputFilePath);
             System.out.println("Error was: " + e.getMessage());
 
             if (Context.get().getConfiguration().projectDebug())
@@ -101,7 +101,7 @@ public class SmallAdContainer
         }
         catch (Exception e)
         {
-            System.out.println("Failed to interpret file '" + inputFilePath + "'");
+            System.out.println("Failed to interpret file " + inputFilePath);
             System.out.println("Error was: " + e.getMessage());
 
             if (Context.get().getConfiguration().projectDebug())
@@ -124,7 +124,7 @@ public class SmallAdContainer
         }
         catch (IOException e)
         {
-            System.out.println("Failed to create directory '" + outputFilePath.getParent() + "'");
+            System.out.println("Failed to create directory at " + outputFilePath.getParent());
             System.out.println("Error was: " + e.getMessage());
 
             if (Context.get().getConfiguration().projectDebug())
@@ -141,7 +141,7 @@ public class SmallAdContainer
         }
         catch (IOException e)
         {
-            System.out.println("Failed to write file '" + outputFilePath + "'");
+            System.out.println("Failed to write file at " + outputFilePath);
             System.out.println("Error was: " + e.getMessage());
 
             if (Context.get().getConfiguration().projectDebug())

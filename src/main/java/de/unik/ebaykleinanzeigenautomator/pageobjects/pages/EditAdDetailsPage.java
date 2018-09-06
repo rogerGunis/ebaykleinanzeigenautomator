@@ -128,7 +128,7 @@ public class EditAdDetailsPage extends BrowsingPage
 
     public PostAdConfirmPage clickSubmit()
     {
-        $("#pstad-submit").shouldBe(visible).scrollTo().click();
+        $("#pstad-submit").scrollTo().shouldBe(visible).click();
 
         return new PostAdConfirmPage();
     }

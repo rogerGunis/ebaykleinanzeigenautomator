@@ -27,21 +27,21 @@ public class Header extends Component
 
     public Homepage clickHome()
     {
-        $("#site-logo > .logo > a").shouldBe(visible).scrollTo().click();
+        $("#site-logo > .logo > a").should(exist).scrollTo().shouldBe(visible).click();
 
         return new Homepage();
     }
 
     public LoginPage clickLoginLink()
     {
-        loginLink.shouldBe(visible).scrollTo().click();
+        loginLink.scrollTo().shouldBe(visible).click();
 
         return new LoginPage();
     }
 
     public LogoutPage clickLogoutLink()
     {
-        logoutLink.shouldBe(visible).scrollTo().click();
+        logoutLink.scrollTo().shouldBe(visible).click();
 
         validateIsLoggedOut();
 
@@ -50,14 +50,14 @@ public class Header extends Component
 
     public PostAdSelectCategoryPage clickPostAd()
     {
-        $("#site-mainnav-postad-link").shouldBe(visible).scrollTo().click();
+        $("#site-mainnav-postad-link").scrollTo().shouldBe(visible).click();
 
         return new PostAdSelectCategoryPage();
     }
 
     public ManagedAdsPage clickManagedAds()
     {
-        $("#site-mainnav-my-link").shouldBe(visible).click();
+        $("#site-mainnav-my-link").scrollTo().shouldBe(visible).click();
 
         $("#my-manageads-content").shouldBe(visible);
 

@@ -41,13 +41,13 @@ public class AdDetailsPage extends BrowsingPage
         if (Context.get().getConfiguration().projectDownloadImages() && $("#viewad-images").exists())
         {
             // Open image zoom container
-            $("#viewad-image.is-clickable").shouldBe(visible).scrollTo().click();
+            $("#viewad-image.is-clickable").scrollTo().shouldBe(visible).click();
 
             // Store image information
             exportImages(smallAd.id, smallAd.images);
 
             // Close image zoom container
-            $("#viewad-lightbox a.mfp-close").shouldBe(visible).scrollTo().click();
+            $("#viewad-lightbox a.mfp-close").scrollTo().shouldBe(visible).click();
         }
     }
 
