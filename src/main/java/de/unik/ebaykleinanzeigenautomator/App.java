@@ -1,8 +1,7 @@
 package de.unik.ebaykleinanzeigenautomator;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.IOError;
+import java.util.logging.Logger;
 
 import de.unik.ebaykleinanzeigenautomator.datamodels.SmallAdContainer;
 import de.unik.ebaykleinanzeigenautomator.flows.ChangeStatusOfAllSmallAdsFlow;
@@ -47,16 +46,21 @@ public class App
         System.out.print("> ");
     }
 
-    private void readInput()
+    private void readInput(boolean isPassword)
     {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
         try
         {
             inputString = "";
-            inputString = br.readLine();
+            if(!isPassword)
+            {
+                inputString = System.console().readLine();
+            }
+            else
+            {
+                inputString = String.valueOf(System.console().readPassword());
+            }
         }
-        catch (IOException e)
+        catch (IOError e)
         {
             System.out.println("\n" + INPUT_OUTPUT_ERROR);
             System.out.println("Error was: " + e.getMessage());
@@ -178,11 +182,11 @@ public class App
         System.out.println("The following inputs will not be save to harddisk.\n");
 
         System.out.print("Please enter your username (email) for ebay-kleinanzeigen.de and press enter: ");
-        readInput();
+        readInput(false);
         String username = inputString;
 
         System.out.print("Please enter your password for ebay-kleinanzeigen.de and press enter: ");
-        readInput();
+        readInput(true);
         String password = inputString;
 
         Context.get().setAccount(username, password);
@@ -193,7 +197,7 @@ public class App
         do
         {
             printMainMenu();
-            readInput();
+            readInput(false);
             interpretInput();
         }
         while (!exit);
@@ -201,6 +205,11 @@ public class App
 
     public void run()
     {
+        // JUL deactivate logger
+        Logger logger = Logger.getLogger("");
+        logger.removeHandler(logger.getHandlers()[0]);
+        logger.setUseParentHandlers(false);
+        
         printTitle();
         readCredentials();
         mainLoop();
@@ -211,9 +220,12 @@ public class App
         /*
          * TODOs
          * 
-         * - Fix issue accessing /data directory from jar
-         * - Allow blind input of account password
-         * - Mute Selenide logger output in command line output
+         * - Fix general issue during delete (counter??)
+         * - Fix issue when list of small ads is empty but operation should be executed (seen on delete)
+         * - Fix issue on import: Element not found {#pstad-cnfrm}
+         * - Add feature to import only missing small ads
+         * - Mute Selenium/Selenide/.. logger output in command line output
+         * - Automate packaging / JAR
          */
 
         new App().run();

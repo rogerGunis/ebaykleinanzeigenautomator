@@ -71,6 +71,9 @@ public class Context
 
         // Timeout for collection look ups
         com.codeborne.selenide.Configuration.collectionsTimeout = configuration.selenideTimeout() * 2;
+        
+        // Configure better logging output
+        System.setProperty("java.util.logging.SimpleFormatter.format", "%1$tT %4$s %5$s%6$s%n");
     }
 
     public Configuration getConfiguration()
