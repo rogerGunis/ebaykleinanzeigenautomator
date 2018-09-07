@@ -1,6 +1,7 @@
 /reports/
 /classes/
 /target/
+/lib/
 bin/
 
 .idea/
