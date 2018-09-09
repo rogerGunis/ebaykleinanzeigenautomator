@@ -4,8 +4,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.aeonbits.owner.ConfigFactory;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 
 import de.unik.ebaykleinanzeigenautomator.datamodels.Account;
 
@@ -28,6 +26,9 @@ public class Context
 
     public static void initialize()
     {
+        get().initializeSelenide();
+        get().account = new Account();
+
         if(!Context.get().getConfiguration().projectDebug())
         {
             // Deactivate output of java.util.logging 
@@ -36,13 +37,10 @@ public class Context
             logger.removeHandler(logger.getHandlers()[0]);
             logger.setUseParentHandlers(false);
             
-            // Deactivate Selenium log output by spawning own chrome driver with silent option
-            if(Context.get().getConfiguration().selenideBrowser().equals("Chrome"))
+            // Disable chromedriver output
+            if(get().getConfiguration().selenideBrowser().toLowerCase().equals("chrome"))
             {
-                //ChromeOptions options = new ChromeOptions();
-                //System.setProperty("webdriver.chrome.args", "--disable-logging");
-                //System.setProperty("webdriver.chrome.silentOutput", "true");
-                //com.codeborne.selenide.WebDriverRunner.setWebDriver(new ChromeDriver(options));
+                System.setProperty("webdriver.chrome.silentOutput", "true");
             }
         }
         else
@@ -50,10 +48,6 @@ public class Context
             // Configure better logging output
             System.setProperty("java.util.logging.SimpleFormatter.format", "%1$tT %4$s %5$s%6$s%n");
         }
-
-        get().initializeSelenide();
-
-        get().account = new Account();
     }
 
     public static Context get()

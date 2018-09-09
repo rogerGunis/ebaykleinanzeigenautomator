@@ -13,7 +13,7 @@ import de.unik.ebaykleinanzeigenautomator.util.Context;
 public class App
 {
     private static final String INPUT_OUTPUT_ERROR = "An input/output error occured while trying to read from your input device.";
-    private static final String INVALID_INPUT_ERROR = "Please choose between options 1 - 7. Enter the digit of the option you want. No other inputs are allowed.";
+    private static final String INVALID_INPUT_ERROR = "Please choose between options 0 - 9. Enter the digit of the option you want. No other inputs are allowed.";
 
     private String inputString = null;
 
@@ -58,7 +58,7 @@ public class App
         {
             inputString = "";
             
-            if(Context.get().getConfiguration().credentialsFromConfiguration())
+            if(!Context.get().getConfiguration().systemConsoleInput())
             {
                 BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
                 inputString = input.readLine();
@@ -262,13 +262,6 @@ public class App
 
     public static void main(String[] args)
     {
-        /*
-         * TODOs
-         * 
-         * - Silent output Selenium/Chromedriver
-         * - Exclude unwanted dependencies from copy-dependency
-         */
-
         new App(args).run();
     }
 }

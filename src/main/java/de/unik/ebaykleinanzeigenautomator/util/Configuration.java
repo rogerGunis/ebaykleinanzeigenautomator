@@ -83,6 +83,10 @@ public interface Configuration extends Config
     @Key("project.credentialsFromConfiguration")
     public boolean credentialsFromConfiguration();
 
+    @DefaultValue("true")
+    @Key("project.systemConsoleInput")
+    public boolean systemConsoleInput();
+    
     @DefaultValue("7500")
     @Key("project.generalDelay")
     public long projectGeneralDelay();
