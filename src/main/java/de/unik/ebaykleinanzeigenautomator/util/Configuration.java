@@ -78,12 +78,16 @@ public interface Configuration extends Config
     @DefaultValue("true")
     @Key("project.downloadImages")
     public boolean projectDownloadImages();
+    
+    @DefaultValue("false")
+    @Key("project.credentialsFromConfiguration")
+    public boolean credentialsFromConfiguration();
 
-    @DefaultValue("600")
+    @DefaultValue("7500")
     @Key("project.generalDelay")
     public long projectGeneralDelay();
 
-    @DefaultValue("7500")
+    @DefaultValue("10000")
     @Key("project.adImportDelay")
     public long projectAdImportDelay();
 }

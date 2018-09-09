@@ -34,7 +34,12 @@ public class Pagination extends Component
 
     public boolean isPossible()
     {
-        pagination.should(exist).scrollTo();
-        return paginationNext.isDisplayed();
+        if(pagination.exists())
+        {
+            pagination.scrollTo();
+            return paginationNext.isDisplayed();
+        }
+        
+        return false;
     }
 }

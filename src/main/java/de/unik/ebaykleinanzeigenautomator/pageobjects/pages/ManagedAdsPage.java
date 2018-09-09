@@ -5,13 +5,12 @@ import static com.codeborne.selenide.Condition.exist;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Assert;
 
-import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 
@@ -22,11 +21,17 @@ import de.unik.ebaykleinanzeigenautomator.util.Context;
 
 public class ManagedAdsPage extends BrowsingPage
 {
+    private static final String SMALL_AD_ITEM_LOCATOR = "li.cardbox";
+    
     public Pagination pagination = new Pagination();
 
     private SelenideElement managedAdsContent = $("#my-manageads-content");
 
     private SelenideElement itemList = managedAdsContent.$(".itemlist");
+    
+    private int itemCountPerPage;
+    private int itemCounter;
+
 
     @Override
     public void validateIsExpectedPage()
@@ -35,7 +40,7 @@ public class ManagedAdsPage extends BrowsingPage
 
         $("#my-manageads").should(exist);
     }
-
+    
     public void activateAllSmallAds()
     {
         processSmallAds("Activated", null, s -> isInactive(s), s -> activateSmallAd(s), false);
@@ -46,12 +51,12 @@ public class ManagedAdsPage extends BrowsingPage
         processSmallAds("Deactivated", null, s -> isActive(s), s -> deactivateSmallAd(s), false);
     }
 
-    public void deleteAllInactiveSmallAds()
+    public void deleteInactiveSmallAds()
     {
         processSmallAds("Deleted", null, s -> isInactive(s), s -> deleteSmallAd(s), true);
     }
 
-    public void deleteAllActiveSmallAds()
+    public void deleteActiveSmallAds()
     {
         processSmallAds("Deleted", null, s -> isActive(s), s -> deleteSmallAd(s), true);
     }
@@ -60,20 +65,42 @@ public class ManagedAdsPage extends BrowsingPage
     {
         processSmallAds("Exported", smallAdContainer, s -> { return true; }, s -> exportSmallAd(s), false);
     }
+    
+    public boolean smallAdExists(SmallAd smallAd)
+    {
+        resetItemCounter();
+
+        while (moreItemsAvailable())
+        {
+            // Re-evaluate elements collection each iteration
+            SelenideElement currentSmallAdElement = getCurrentItemFromPage().scrollTo();
+            
+            // Get title
+            String title = currentSmallAdElement.find(".manageaditem-main .manageaditem-ad > h2 > a").shouldBe(visible).text();
+
+            // Check if we this matches the given small ad in title 
+            if (smallAd.title.equals(title))
+            {
+                return true;
+            }
+            
+            // Advance
+            itemCounter++;
+        }
+        
+        return false;
+    }
 
     private void processSmallAds(String operation, SmallAdContainer smallAdContainer, Predicate<SelenideElement> predicate, Function<SelenideElement, SmallAd> function, boolean modifiesItemList)
     {
-        // Validate
-        itemList.findAll("li.cardbox").shouldHave(CollectionCondition.sizeGreaterThan(0));
-
         boolean applied = false;
-        int itemCount = itemList.findAll("li.cardbox").size();
-        int i = 0;
 
-        while (i < itemCount)
+        resetItemCounter();
+
+        while (moreItemsAvailable())
         {
             // Re-evaluate elements collection each iteration
-            SelenideElement currentSmallAdElement = itemList.findAll("li.cardbox").get(i).should(exist).scrollTo();
+            SelenideElement currentSmallAdElement = getCurrentItemFromPage().scrollTo();
 
             // Check if we need to apply our function to this element
             if (predicate.test(currentSmallAdElement))
@@ -89,47 +116,61 @@ public class ManagedAdsPage extends BrowsingPage
                     function.apply(currentSmallAdElement);
                 }
 
-                // Print status
-                System.out.println(operation + " " + currentSmallAdElement.find(".manageaditem-ad a").shouldBe(exist).text());
+                // Get title and print status
+                String title = currentSmallAdElement.find(".manageaditem-main .manageaditem-ad > h2 > a").shouldBe(visible).text();
+                System.out.println(operation + " " + title);
 
-                // Indicate that we could execute our operation at least once
-                applied = true;
-
-                if (!modifiesItemList)
+                // If the operation modified our item list at the page
+                if (modifiesItemList)
                 {
-                    // Increase counter only if operation does not modify our item list
-                    i++;
-                }
-                else
-                {
-                    // If the operation modified our item list, we now have fewer items
-                    itemCount--;
+                    // We now have fewer items
+                    itemCountPerPage--;
+                    itemCounter--;
 
                     // Validate that list changed
-                    itemList.findAll("li.cardbox").shouldHaveSize(itemCount);
+                    itemList.findAll(SMALL_AD_ITEM_LOCATOR).shouldHaveSize(itemCountPerPage);
                 }
+                
+                // Indicate that we could execute our operation at least once
+                applied = true;
             }
-            else
-            {
-                // Increase counter since nothing happened anyway
-                i++;
-            }
-
-            // Check if we need to page
-            if ((i == itemCount) && pagination.isPossible())
-            {
-                pagination.apply();
-
-                // Retrieve new item list information and reset counter
-                itemCount = itemList.findAll("li.cardbox").size();
-                i = 0;
-            }
+            
+            // Advance
+            itemCounter++;
         }
 
         if (!applied)
         {
             System.out.println("No applicable small ads found in account " + Context.get().getAccount().username);
         }
+    }
+    
+    private boolean moreItemsAvailable()
+    {
+        if(itemCounter == itemCountPerPage)
+        {
+            // Handle pagination
+            if(pagination.isPossible())
+            {
+                pagination.apply();
+
+                // Retrieve new item list information and reset counter
+                resetItemCounter();
+            }
+        }
+        
+        return itemCounter < itemCountPerPage;
+    }
+    
+    private void resetItemCounter()
+    {
+        itemCountPerPage = itemList.should(exist).findAll(SMALL_AD_ITEM_LOCATOR).size();
+        itemCounter = 0;
+    }
+    
+    private SelenideElement getCurrentItemFromPage()
+    {
+        return itemList.findAll(SMALL_AD_ITEM_LOCATOR).get(itemCounter).should(exist);
     }
 
     private boolean isInactive(SelenideElement smallAdElement)
@@ -189,9 +230,12 @@ public class ManagedAdsPage extends BrowsingPage
 
         // Get identifier
         smallAdElement.shouldHave(attribute("data-adid"));
-        String id = smallAdElement.getAttribute("data-adid");
-        Assert.assertTrue("Ad id must exist and not be empty.", StringUtils.isNotBlank(id));
-        smallAd.id = id;
+        smallAd.id = smallAdElement.getAttribute("data-adid");
+        if(StringUtils.isBlank(smallAd.id))
+        {
+            // In the unlikely case that the page does have an error, because we need the id for our image file names
+            smallAd.id = UUID.randomUUID().toString();
+        }
 
         // We need to activate inactive small ads first (otherwise we can not export all details)
         boolean wasTemporarilyActivated = false;

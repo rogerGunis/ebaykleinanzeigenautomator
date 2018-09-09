@@ -1,12 +1,11 @@
 package de.unik.ebaykleinanzeigenautomator;
 
-import java.io.IOError;
-import java.util.logging.Logger;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 import de.unik.ebaykleinanzeigenautomator.datamodels.SmallAdContainer;
-import de.unik.ebaykleinanzeigenautomator.flows.ChangeStatusOfAllSmallAdsFlow;
-import de.unik.ebaykleinanzeigenautomator.flows.DeleteAllActiveSmallAdsFlow;
-import de.unik.ebaykleinanzeigenautomator.flows.DeleteAllInactiveSmallAdsFlow;
+import de.unik.ebaykleinanzeigenautomator.flows.ChangeSmallAdsStatusFlow;
+import de.unik.ebaykleinanzeigenautomator.flows.DeleteSmallAdsFlow;
 import de.unik.ebaykleinanzeigenautomator.flows.ExportSmallAdContainerFlow;
 import de.unik.ebaykleinanzeigenautomator.flows.ImportSmallAdContainerFlow;
 import de.unik.ebaykleinanzeigenautomator.util.Context;
@@ -20,9 +19,14 @@ public class App
 
     private boolean exit = false;
 
-    public App()
+    public App(String args[])
     {
         Context.initialize();
+        
+        if(args.length == 1)
+        {
+            Context.get().resetSessionIdentifier(args[0]);
+        }
     }
 
     private void printTitle()
@@ -39,10 +43,12 @@ public class App
         System.out.println("2) Export all existing small ads from the site to your harddisk");
         System.out.println("3) Activate all small ads at the site");
         System.out.println("4) Deactivate all small ads at the site");
-        System.out.println("5) Delete all inactive small ads at the site");
-        System.out.println("6) Delete all active small ads at the site");
-        System.out.println("7) Import all active small ads from your harddisk to the site");
-        System.out.println("8) Exit\n");
+        System.out.println("5) Delete inactive small ads at the site");
+        System.out.println("6) Delete active small ads at the site");
+        System.out.println("7) Import active small ads from your harddisk to the site");
+        System.out.println("8) Import active and not yet existing small ads from your harddisk to the site");
+        System.out.println("9) Import all small ads from your harddisk to the site");
+        System.out.println("0) Exit\n");
         System.out.print("> ");
     }
 
@@ -51,25 +57,33 @@ public class App
         try
         {
             inputString = "";
-            if(!isPassword)
+            
+            if(Context.get().getConfiguration().credentialsFromConfiguration())
             {
-                inputString = System.console().readLine();
+                BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+                inputString = input.readLine();
             }
             else
             {
-                inputString = String.valueOf(System.console().readPassword());
+                if(!isPassword)
+                {
+                    inputString = System.console().readLine();
+                }
+                else
+                {
+                    inputString = String.valueOf(System.console().readPassword());
+                }
             }
         }
-        catch (IOError e)
+        catch (Throwable t)
         {
             System.out.println("\n" + INPUT_OUTPUT_ERROR);
-            System.out.println("Error was: " + e.getMessage());
+            System.out.println("Error was: " + t.getMessage());
         }
     }
 
     private void interpretInput()
     {
-        // Convert input string to number
         int input = 0;
         try
         {
@@ -84,94 +98,126 @@ public class App
         switch (input)
         {
             case 1:
-            {
-                System.out.println("\nSetting credentials\n");
-                readCredentials();
-            }
+                {
+                    System.out.println("\nSetting credentials\n");
+                    readCredentials();
+                }
                 break;
             case 2:
-            {
-                System.out.println("\nExporting small ads\n");
-
-                ExportSmallAdContainerFlow exportFlow = new ExportSmallAdContainerFlow();
-                if (!exportFlow.run())
                 {
-                    return;
+                    System.out.println("\nExporting small ads\n");
+    
+                    ExportSmallAdContainerFlow exportFlow = new ExportSmallAdContainerFlow();
+                    if (!exportFlow.run())
+                    {
+                        return;
+                    }
+    
+                    if (!exportFlow.getSmallAdContainer().writeToDisk(Context.get().getWorkingFilePath()))
+                    {
+                        return;
+                    }
                 }
-
-                if (!exportFlow.getSmallAdContainer().writeToDisk(Context.get().getWorkingFilePath()))
-                {
-                    return;
-                }
-            }
                 break;
             case 3:
-            {
-                System.out.println("\nActivating small ads\n");
-
-                if (!new ChangeStatusOfAllSmallAdsFlow(true).run())
                 {
-                    return;
+                    System.out.println("\nActivating small ads\n");
+    
+                    if (!new ChangeSmallAdsStatusFlow().run(true))
+                    {
+                        return;
+                    }
                 }
-            }
                 break;
             case 4:
-            {
-                System.out.println("\nDeactivating small ads\n");
-
-                if (!new ChangeStatusOfAllSmallAdsFlow(false).run())
                 {
-                    return;
+                    System.out.println("\nDeactivating small ads\n");
+    
+                    if (!new ChangeSmallAdsStatusFlow().run(false))
+                    {
+                        return;
+                    }
                 }
-            }
                 break;
             case 5:
-            {
-                System.out.println("\nDeleting inactive small ads\n");
-
-                if (!new DeleteAllInactiveSmallAdsFlow().run())
                 {
-                    return;
+                    System.out.println("\nDeleting inactive small ads\n");
+    
+                    if (!new DeleteSmallAdsFlow().run(false))
+                    {
+                        return;
+                    }
                 }
-            }
                 break;
             case 6:
-            {
-                System.out.println("\nDeleting active small ads\n");
-
-                if (!new DeleteAllActiveSmallAdsFlow().run())
                 {
-                    return;
+                    System.out.println("\nDeleting active small ads\n");
+    
+                    if (!new DeleteSmallAdsFlow().run(true))
+                    {
+                        return;
+                    }
                 }
-            }
                 break;
             case 7:
-            {
-                System.out.println("\nImporting active small ads\n");
-
-                SmallAdContainer smallAdContainer = new SmallAdContainer();
-                if (!smallAdContainer.readFromDisk(Context.get().getWorkingFilePath()))
                 {
-                    return;
+                    System.out.println("\nImporting active small ads\n");
+    
+                    SmallAdContainer smallAdContainer = new SmallAdContainer();
+                    if (!smallAdContainer.readFromDisk(Context.get().getWorkingFilePath()))
+                    {
+                        return;
+                    }
+    
+                    if (!new ImportSmallAdContainerFlow(smallAdContainer).run(true, false))
+                    {
+                        return;
+                    }
                 }
-
-                if (!new ImportSmallAdContainerFlow(smallAdContainer).run())
-                {
-                    return;
-                }
-            }
                 break;
             case 8:
-            {
-                System.out.println("\nExiting");
-                exit = true;
-            }
+                {
+                    System.out.println("\nImporting active and not yet existing small ads\n");
+    
+                    SmallAdContainer smallAdContainer = new SmallAdContainer();
+                    if (!smallAdContainer.readFromDisk(Context.get().getWorkingFilePath()))
+                    {
+                        return;
+                    }
+    
+                    if (!new ImportSmallAdContainerFlow(smallAdContainer).run(true, true))
+                    {
+                        return;
+                    }
+                }
+                break;
+            case 9:
+                {
+                    System.out.println("\nImporting all small ads\n");
+    
+                    SmallAdContainer smallAdContainer = new SmallAdContainer();
+                    if (!smallAdContainer.readFromDisk(Context.get().getWorkingFilePath()))
+                    {
+                        return;
+                    }
+    
+                    if (!new ImportSmallAdContainerFlow(smallAdContainer).run(false, false))
+                    {
+                        return;
+                    }
+                }
+                break;
+            case 0:
+                {
+                    System.out.println("\nExiting");
+                    exit = true;
+                }
                 break;
             default:
-            {
-                System.out.println("\n" + INVALID_INPUT_ERROR);
-                return;
-            }
+                {
+                    System.out.println("\n" + INVALID_INPUT_ERROR);
+                    return;
+                }
         }
 
         System.out.println("\nEverything ok");
@@ -205,13 +251,12 @@ public class App
 
     public void run()
     {
-        // JUL deactivate logger
-        Logger logger = Logger.getLogger("");
-        logger.removeHandler(logger.getHandlers()[0]);
-        logger.setUseParentHandlers(false);
+        if(!Context.get().getConfiguration().credentialsFromConfiguration())
+        {
+            printTitle();
+            readCredentials();
+        }
         
-        printTitle();
-        readCredentials();
         mainLoop();
     }
 
@@ -220,14 +265,10 @@ public class App
         /*
          * TODOs
          * 
-         * - Fix general issue during delete (counter??)
-         * - Fix issue when list of small ads is empty but operation should be executed (seen on delete)
-         * - Fix issue on import: Element not found {#pstad-cnfrm}
-         * - Add feature to import only missing small ads
-         * - Mute Selenium/Selenide/.. logger output in command line output
-         * - Automate packaging / JAR
+         * - Silent output Selenium/Chromedriver
+         * - Exclude unwanted dependencies from copy-dependency
          */
 
-        new App().run();
+        new App(args).run();
     }
 }

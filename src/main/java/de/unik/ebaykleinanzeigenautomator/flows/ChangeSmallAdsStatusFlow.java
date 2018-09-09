@@ -5,9 +5,9 @@ import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.LoginPage;
 import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.ManagedAdsPage;
 import de.unik.ebaykleinanzeigenautomator.util.Context;
 
-public class DeleteAllActiveSmallAdsFlow
+public class ChangeSmallAdsStatusFlow
 {
-    public boolean run()
+    public boolean run(boolean activate)
     {
         try
         {
@@ -19,13 +19,20 @@ public class DeleteAllActiveSmallAdsFlow
 
             ManagedAdsPage managedAdsPage = homepage.header.clickManagedAds();
 
-            managedAdsPage.deleteAllActiveSmallAds();
+            if(activate)
+            {
+                managedAdsPage.activateAllSmallAds();
+            }
+            else
+            {
+                managedAdsPage.deactivateAllSmallAds();
+            }
 
             managedAdsPage.header.clickLogoutLink();
         }
         catch (Throwable t)
         {
-            System.out.println("Failed to delete all active small ads");
+            System.out.println("Failed to " + (activate ? "activate" : "deactivate") + " small ads");
             System.out.println("Error was: " + t.getMessage());
 
             if (Context.get().getConfiguration().projectDebug())

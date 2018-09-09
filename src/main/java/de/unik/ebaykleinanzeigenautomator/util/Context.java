@@ -1,6 +1,11 @@
 package de.unik.ebaykleinanzeigenautomator.util;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.aeonbits.owner.ConfigFactory;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import de.unik.ebaykleinanzeigenautomator.datamodels.Account;
 
@@ -23,7 +28,31 @@ public class Context
 
     public static void initialize()
     {
+        if(!Context.get().getConfiguration().projectDebug())
+        {
+            // Deactivate output of java.util.logging 
+            Logger logger = Logger.getLogger("");
+            logger.setLevel(Level.OFF);
+            logger.removeHandler(logger.getHandlers()[0]);
+            logger.setUseParentHandlers(false);
+            
+            // Deactivate Selenium log output by spawning own chrome driver with silent option
+            if(Context.get().getConfiguration().selenideBrowser().equals("Chrome"))
+            {
+                //ChromeOptions options = new ChromeOptions();
+                //System.setProperty("webdriver.chrome.args", "--disable-logging");
+                //System.setProperty("webdriver.chrome.silentOutput", "true");
+                //com.codeborne.selenide.WebDriverRunner.setWebDriver(new ChromeDriver(options));
+            }
+        }
+        else
+        {
+            // Configure better logging output
+            System.setProperty("java.util.logging.SimpleFormatter.format", "%1$tT %4$s %5$s%6$s%n");
+        }
+
         get().initializeSelenide();
+
         get().account = new Account();
     }
 
@@ -71,9 +100,6 @@ public class Context
 
         // Timeout for collection look ups
         com.codeborne.selenide.Configuration.collectionsTimeout = configuration.selenideTimeout() * 2;
-        
-        // Configure better logging output
-        System.setProperty("java.util.logging.SimpleFormatter.format", "%1$tT %4$s %5$s%6$s%n");
     }
 
     public Configuration getConfiguration()

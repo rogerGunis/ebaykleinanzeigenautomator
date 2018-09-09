@@ -39,6 +39,11 @@ public class SmallAdContainer
 
         contact = jsonObject.getString("contact");
         sessionIdentifier = jsonObject.getString("sessionIdentifier");
+        
+        if(jsonArray.isEmpty())
+        {
+            throw new ParseException("File does not contain any small ads", 0);
+        }
 
         for (int i = 0; i < jsonArray.length(); i++)
         {
@@ -117,6 +122,12 @@ public class SmallAdContainer
 
     public boolean writeToDisk(String outputPath)
     {
+        if(smallAds.isEmpty())
+        {
+            System.out.println("Skipped writing small ads to disk");
+            return true;
+        }
+        
         Path outputFilePath = new File(outputPath).toPath();
         try
         {
