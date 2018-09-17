@@ -87,7 +87,6 @@ public class ImportSmallAdContainerFlow
             {
                 System.out.println("No applicable small ads found for account " + Context.get().getAccount().username);
             }
-
         }
         catch (Throwable t)
         {

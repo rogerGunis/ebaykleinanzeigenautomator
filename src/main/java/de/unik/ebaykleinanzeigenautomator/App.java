@@ -8,6 +8,7 @@ import de.unik.ebaykleinanzeigenautomator.flows.ChangeSmallAdsStatusFlow;
 import de.unik.ebaykleinanzeigenautomator.flows.DeleteSmallAdsFlow;
 import de.unik.ebaykleinanzeigenautomator.flows.ExportSmallAdContainerFlow;
 import de.unik.ebaykleinanzeigenautomator.flows.ImportSmallAdContainerFlow;
+import de.unik.ebaykleinanzeigenautomator.flows.LoginLogoutFlow;
 import de.unik.ebaykleinanzeigenautomator.util.Context;
 
 public class App
@@ -99,8 +100,14 @@ public class App
         {
             case 1:
                 {
-                    System.out.println("\nSetting credentials\n");
+                    System.out.println("\nSetting and verifying credentials\n");
+
                     readCredentials();
+                    
+                    if(!new LoginLogoutFlow().run())
+                    {
+                        return;
+                    }
                 }
                 break;
             case 2:
@@ -225,7 +232,7 @@ public class App
 
     public void readCredentials()
     {
-        System.out.println("The following inputs will not be save to harddisk.\n");
+        System.out.println("The following inputs will not be saved to harddisk.\n");
 
         System.out.print("Please enter your username (email) for ebay-kleinanzeigen.de and press enter: ");
         readInput(false);
@@ -234,6 +241,8 @@ public class App
         System.out.print("Please enter your password for ebay-kleinanzeigen.de and press enter: ");
         readInput(true);
         String password = inputString;
+        
+        System.out.println("");
 
         Context.get().setAccount(username, password);
     }
@@ -255,6 +264,7 @@ public class App
         {
             printTitle();
             readCredentials();
+            new LoginLogoutFlow().run();
         }
         
         mainLoop();
@@ -262,6 +272,15 @@ public class App
 
     public static void main(String[] args)
     {
+        // TODO
+        // - Screenshot on error
+        // - Ease up on publish ad confirmation screen
+        // - Randomize think time with base threshold
+        // - Error on captcha when publishing an ad
+        // - Pagination error:
+        //          Error was: Element should have exact text '2' {.pagination-pages > .pagination-current}
+        //          Element: '<span class="pagination-current" data-page="1" title="Seite 1">1</span>'
+        
         new App(args).run();
     }
 }
