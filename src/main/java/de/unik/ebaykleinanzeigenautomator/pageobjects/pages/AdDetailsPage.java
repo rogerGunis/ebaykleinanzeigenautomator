@@ -101,16 +101,22 @@ public class AdDetailsPage extends BrowsingPage
 
     private void exportAttributes(Hashtable<String, String> attributes)
     {
-        ElementsCollection attributeKeys = $$("#viewad-details .attributelist--key").shouldHave(sizeGreaterThanOrEqual(3));
-        ElementsCollection attributeValues = $$("#viewad-details .attributelist--value").shouldHave(sizeGreaterThanOrEqual(3));
-
-        // Attributes with index 0-2 are location, creation date and ad id and will be ignored here
-        for (int i = 3; i < attributeKeys.size(); i++)
+        ElementsCollection attributeKeys = $$("#viewad-details .attributelist--key").shouldHave(sizeGreaterThanOrEqual(2));
+        ElementsCollection attributeValues = $$("#viewad-details .attributelist--value").shouldHave(sizeGreaterThanOrEqual(2));
+        
+        // Ads with only two attributes are currently in processing (still missing creation date)
+        // We will ignore such ads here and only handle complete ads with 3+ attributes
+        
+        if(attributeKeys.size() > 2)
         {
-            String key = attributeKeys.get(i).text().trim().replace(":", "");
-            String value = attributeValues.get(i).find("span").text().trim();
-
-            attributes.put(key, value);
+            // Attributes with index 0-2 are location, creation date and ad id and will be ignored here
+            for (int i = 3; i < attributeKeys.size(); i++)
+            {
+                String key = attributeKeys.get(i).text().trim().replace(":", "");
+                String value = attributeValues.get(i).find("span").text().trim();
+    
+                attributes.put(key, value);
+            }
         }
     }
 

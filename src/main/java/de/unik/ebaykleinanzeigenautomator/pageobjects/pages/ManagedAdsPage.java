@@ -99,6 +99,9 @@ public class ManagedAdsPage extends BrowsingPage
 
         while (moreItemsAvailable())
         {
+            // Remember if there are multiple pages with items
+            boolean multiPageItemList = pagination.isPossible();
+            
             // Re-evaluate elements collection each iteration
             SelenideElement currentSmallAdElement = getCurrentItemFromPage().scrollTo();
 
@@ -120,14 +123,18 @@ public class ManagedAdsPage extends BrowsingPage
                 String title = currentSmallAdElement.find(".manageaditem-main .manageaditem-ad > h2 > a").shouldBe(visible).text();
                 System.out.println(operation + " " + title);
 
-                // If the operation modified our item list at the page
+                // If our operation modifies the item list, we need to adjust the counters
                 if (modifiesItemList)
                 {
-                    // We now have fewer items
-                    itemCountPerPage--;
+                    // The modification only decreased out item list size if this was the only page with items
+                    if(!multiPageItemList)
+                    {
+                        itemCountPerPage--;
+                    }
+                    
                     itemCounter--;
 
-                    // Validate that list changed
+                    // Validate that our item list has the proper item count
                     itemList.findAll(SMALL_AD_ITEM_LOCATOR).shouldHaveSize(itemCountPerPage);
                 }
                 

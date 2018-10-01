@@ -16,6 +16,8 @@ public class App
     private static final String INPUT_OUTPUT_ERROR = "An input/output error occured while trying to read from your input device.";
     private static final String INVALID_INPUT_ERROR = "Please choose between options 0 - 9. Enter the digit of the option you want. No other inputs are allowed.";
 
+    private static final String COMMANDLINE_PARAMETER_SESSION = "-session=";
+    
     private String inputString = null;
 
     private boolean exit = false;
@@ -24,9 +26,18 @@ public class App
     {
         Context.initialize();
         
-        if(args.length == 1)
+        for(int i=0; i<args.length; i++)
         {
-            Context.get().resetSessionIdentifier(args[0]);
+            processCommandLineParameter(args[i]);
+        }
+    }
+    
+    private void processCommandLineParameter(String parameter)
+    {
+        if(parameter.toLowerCase().startsWith(COMMANDLINE_PARAMETER_SESSION))
+        {
+            String sessionIdentifier = parameter.replaceAll(COMMANDLINE_PARAMETER_SESSION, "").trim();
+            Context.get().resetSessionIdentifier(sessionIdentifier);
         }
     }
 
@@ -273,12 +284,7 @@ public class App
     public static void main(String[] args)
     {
         // TODO
-        // - Screenshot on error
-        // - Ease up on publish ad confirmation screen
-        // - Error on captcha when publishing an ad
-        // - Pagination error:
-        //          Error was: Element should have exact text '2' {.pagination-pages > .pagination-current}
-        //          Element: '<span class="pagination-current" data-page="1" title="Seite 1">1</span>'
+        // - Explicit error on CAPTCHA when publishing an ad
         
         new App(args).run();
     }
