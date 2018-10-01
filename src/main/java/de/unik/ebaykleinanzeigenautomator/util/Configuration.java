@@ -89,9 +89,13 @@ public interface Configuration extends Config
     
     @DefaultValue("7500")
     @Key("project.generalDelay")
-    public long projectGeneralDelay();
+    public int projectGeneralDelay();
 
     @DefaultValue("10000")
     @Key("project.adImportDelay")
-    public long projectAdImportDelay();
+    public int projectAdImportDelay();
+    
+    @DefaultValue("0.2")
+    @Key("project.delayOffsetPercentage")
+    public double projectDelayOffsetPercentage();
 }

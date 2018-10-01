@@ -2,8 +2,6 @@ package de.unik.ebaykleinanzeigenautomator.flows;
 
 import java.util.Iterator;
 
-import com.codeborne.selenide.Selenide;
-
 import de.unik.ebaykleinanzeigenautomator.datamodels.SmallAd;
 import de.unik.ebaykleinanzeigenautomator.datamodels.SmallAdContainer;
 import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.EditAdDetailsPage;
@@ -13,6 +11,7 @@ import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.ManagedAdsPage;
 import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.PostAdConfirmPage;
 import de.unik.ebaykleinanzeigenautomator.pageobjects.pages.PostAdSelectCategoryPage;
 import de.unik.ebaykleinanzeigenautomator.util.Context;
+import de.unik.ebaykleinanzeigenautomator.util.Util;
 
 public class ImportSmallAdContainerFlow
 {
@@ -74,7 +73,7 @@ public class ImportSmallAdContainerFlow
                 System.out.println("Imported " + smallAd.title);
 
                 // With each posted ad wait a little to minimize account lock risk due to automation
-                Selenide.sleep(Context.get().getConfiguration().projectAdImportDelay());
+                Util.waitOnPageLoad(Context.get().getConfiguration().projectAdImportDelay());
 
                 homepage = postAdConfirmPage.header.clickHome();
 

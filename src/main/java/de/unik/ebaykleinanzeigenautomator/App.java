@@ -275,7 +275,6 @@ public class App
         // TODO
         // - Screenshot on error
         // - Ease up on publish ad confirmation screen
-        // - Randomize think time with base threshold
         // - Error on captcha when publishing an ad
         // - Pagination error:
         //          Error was: Element should have exact text '2' {.pagination-pages > .pagination-current}
