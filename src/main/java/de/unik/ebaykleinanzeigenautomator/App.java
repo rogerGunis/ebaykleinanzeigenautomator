@@ -38,6 +38,8 @@ public class App
         {
             String sessionIdentifier = parameter.replaceAll(COMMANDLINE_PARAMETER_SESSION, "").trim();
             Context.get().resetSessionIdentifier(sessionIdentifier);
+            
+            System.out.println("\nUsing session identifier: " + Context.get().getSessionIdentifier());
         }
     }
 
