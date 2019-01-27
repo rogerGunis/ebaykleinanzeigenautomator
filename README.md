@@ -67,4 +67,4 @@ In case you want to start the application from within your Java IDE there are fu
 
 ## Disclaimer
 
-Use with reason. Mass uploading or duplicating small ads is violating ebay-kleinanzeigen terms and conditions (and will get you blocked by the site anyway). The application was written to backup and refresh *your* small ads every now and then, not to bloat the small ads platform.
+Use with reason. Mass uploading or duplicating small ads is violating ebay-kleinanzeigen terms and conditions (and will get you blocked by the site). The application was written to backup and refresh *your* small ads every now and then (which is cumbersome to do manually), not to spam the small ads platform.
