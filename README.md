@@ -6,20 +6,17 @@ Does not use the official ebay-kleinanzeigen classifieds API, but uses Selenide 
 
 ## Requirements
 
-Requires that a webbrowser and webdriver (chromedriver, geckodriver, ..) is installed. You can choose the type of browser in the project properties or via below commandline switch. Expects the webdriver to be available via your path variable, e.g. in `/user/bin/chromedriver`, but you can specify whatever location (see section commandline switches).
+Requires a webbrowser and webdriver (chromedriver, geckodriver etc.). By default the application uses Chrome. You can choose the type of browser in the project properties or via commandline switch. Expects the webdriver to be available via your path variable, e.g. in `/user/bin/chromedriver`, but you can specify whatever location (see section commandline switches).
 
 ## Build and run
 
 Build with Maven via `mvn package` with outputs located in `/target`.
 
-Copy the `ebaykleinanzeigenautomator.jar` and `/lib` directory to what ever location you need it to be.
+Copy the outputs `ebaykleinanzeigenautomator.jar` and `/lib` to whatever location you need it to be.
 
-Run via `java -jar ebaykleinanzeigenautomator.jar`.
+Run from that location via `java -jar ebaykleinanzeigenautomator.jar`.
 
-Run with commandline options and property overrides via:
-```
-java -jar -D.. ebaykleinanzeigenautomator.jar -session=..
-```
+Run with commandline options and property overrides via `java -jar -D.. ebaykleinanzeigenautomator.jar -session=..` (see section commandline switches).
 
 ## Usage
 
@@ -62,7 +59,7 @@ You might want to play with the following commandline options and property overr
 -Daccount.password=..
 -Dproject.dataDirectory=./data
 ```
-By default the application is configured for console interaction and Chrome browser in headless mode and will start from a clean slate (i.e. no existing data is loaded).
+By default the application is configured for console interaction and Chrome browser in headless mode and will start from a clean slate (i.e. no existing data is loaded). See `config/project.properties` for all properties.
 
 Each export operation stores session data in the `/data` directory. This directory contains all small ad data including small ad images (basically a backup of all your small ads in JSON format). You can 'resume' a previous session (load your backup) by providing the session identifier to the application via the `-session` commandline parameter. This will use the stored data, so you won't have to export all data from the site again. Since you can mix multiple accounts and data versions, each 'data session' represents a version of your small ad contents. The session identifier can be found in `small-ads.json` or the respective directory name under `/data/`.
 
