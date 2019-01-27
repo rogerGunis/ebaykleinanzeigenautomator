@@ -91,9 +91,6 @@ public class Context
 
         // Tests will fail after x milliseconds if the given condition does not match
         com.codeborne.selenide.Configuration.timeout = configuration.selenideTimeout();
-
-        // Timeout for collection look ups
-        com.codeborne.selenide.Configuration.collectionsTimeout = configuration.selenideTimeout() * 2;
     }
 
     public Configuration getConfiguration()

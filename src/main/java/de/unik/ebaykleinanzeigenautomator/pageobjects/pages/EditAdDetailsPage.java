@@ -30,6 +30,23 @@ public class EditAdDetailsPage extends BrowsingPage
 
         $("#pstad").should(exist);
     }
+    
+    public boolean hasPublishBlocker()
+    {
+    	return $(".outcomebox-warning").is(visible);
+    }
+
+    public boolean hasCaptcha()
+    {
+    	return false;
+    	// TODO
+    	//return $("").is(visible);
+    }
+
+    public String getPublishBlockerMessage()
+    {
+    	return $(".outcomebox-warning .outcomebox--body div > div:last-of-type > p").getText();
+    }
 
     public PostAdConfirmPage publishAd(SmallAd smallAd)
     {

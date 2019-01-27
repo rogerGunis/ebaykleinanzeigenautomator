@@ -34,9 +34,13 @@ public class ImportSmallAdContainerFlow
 
             // Loop through small ad container
             Iterator<SmallAd> smallAdsIterator = smallAdContainer.smallAds.iterator();
-            boolean imported = false;
+            
+            // Loop states
+            boolean importedAtLeastOnce = false;
+            boolean errorOccurredWhilePublishing = false;
+            boolean publishingCurrentlyBlocked = false;
 
-            while (smallAdsIterator.hasNext())
+            while (smallAdsIterator.hasNext() || publishingCurrentlyBlocked)
             {
                 SmallAd smallAd = smallAdsIterator.next();
                 
@@ -64,25 +68,47 @@ public class ImportSmallAdContainerFlow
                     postAdSelectCategoryPage = homepage.header.clickPostAd();
                 }
                 
-                // Post small ad
+                // Browse and select appropriate small ad categories
                 postAdSelectCategoryPage.selectCategories(smallAd);
 
+                // Go to small ad details page
                 EditAdDetailsPage editAdDetailsPage = postAdSelectCategoryPage.clickNext();
+                
+                // Check if ad publishing is currently blocked, e.g. small ad quota exceeded
+                if(editAdDetailsPage.hasPublishBlocker())
+                {
+                	System.out.println("Publishing ad '" + smallAd.title + "' is currently not possible.");
+                	System.out.println("Ebay Kleinanzeigen reported the following problem: " + editAdDetailsPage.getPublishBlockerMessage() + "\n");
+                	errorOccurredWhilePublishing = true;
+                	continue;
+                }
+                
+                // Check for captcha
+                if(editAdDetailsPage.hasCaptcha())
+                {
+                	System.out.println("Publishing ad '" + smallAd.title + "' is currently not possible.");
+                	System.out.println("Ebay Kleinanzeigen detected that we are publishing ads in an automated fashion and requires user to solve a Captcha. Please try again later.\n");
+                	errorOccurredWhilePublishing = true;
+                	publishingCurrentlyBlocked = true;
+                	continue;
+                }
+                
+                // Everything seems to be okay, publish ad
                 PostAdConfirmPage postAdConfirmPage = editAdDetailsPage.publishAd(smallAd);
 
                 System.out.println("Imported " + smallAd.title);
 
-                // With each posted ad wait a little to minimize account lock risk due to automation
+                // With each posted ad wait a little to minimize publish block risk due to automation
                 Util.waitOnPageLoad(Context.get().getConfiguration().projectAdImportDelay());
 
                 homepage = postAdConfirmPage.header.clickHome();
 
-                imported = true;
+                importedAtLeastOnce = true;
             }
 
             homepage.header.clickLogoutLink();
 
-            if (!imported)
+            if (!importedAtLeastOnce && !errorOccurredWhilePublishing)
             {
                 System.out.println("No applicable small ads found for account " + Context.get().getAccount().username);
             }

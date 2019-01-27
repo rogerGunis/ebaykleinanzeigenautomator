@@ -285,9 +285,6 @@ public class App
 
     public static void main(String[] args)
     {
-        // TODO
-        // - Explicit error on CAPTCHA when publishing an ad
-        
         new App(args).run();
     }
 }
