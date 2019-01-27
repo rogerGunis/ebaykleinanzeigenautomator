@@ -36,9 +36,11 @@ You might wanna play with the following command line options:
 -project.dataDirectory=./data
 -session=123456789
 ```
-The `session` parameter will resume a previous session. The session identifier provided can be found in the JSON or the directory name under `/data`.
+By default the application is configured for console interaction and Chrome browser in headless mode and will start from a clean slate (i.e. no existing data is loaded).
 
-In case you want to start the application from within your Java IDE there are further options in config/project.properties, e.g. enabling debug output. By default the application is configured for console interaction and headless browser usage.
+Each export operation stores session data in the `/data` directory. This directory contains all small ad data including small ad images \- basically a backup of all your small ads in JSON format. You can 'resume' a previous session (load your backup) by providing the session identifier to the application via the `-session` commandline parameter. This will use the stored data, so you won't have to export all data from the site again. Since you can mix multiple accounts and data versions, each 'data session' represents a version of your small ad contents. The session identifier can be found in `small-ads.json` or the respective directory name under `/data/`.
+
+In case you want to start the application from within your Java IDE there are further options in `config/project.properties`, e.g. enabling debug output. If you prefer, you can store your account credentials in ``config/credentials.properties`` and enable reading your credentials from this file via option `project.credentialsFromConfiguration` in `config/project.properties`. (A template file `credentials.properties.template` is given.) This comes in handy when using the application from with your Java IDE.
 
 ## Disclaimer
 
