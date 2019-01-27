@@ -1,8 +1,8 @@
 # ebaykleinanzeigenautomator
 
-Automates small ad (classifieds) export and import from and to [ebay-kleinanzeigen](https://www.ebay-kleinanzeigen.de).
+Automates small ad export and import from and to [ebay-kleinanzeigen](https://www.ebay-kleinanzeigen.de).
 
-Does not use the official ebay-kleinanzeigen classifieds API, but uses Selenide to browse the site and simulate user input. (The official API was not available at the time of writing this application.)
+Does not use the official ebay-kleinanzeigen classifieds API, but Selenide to browse the site and simulate user input. (The [official API](https://api.ebay-kleinanzeigen.de/docs/pages/home) was not available at the time of writing this application.)
 
 ## Requirements
 
