@@ -15,9 +15,20 @@ Provides a small console UI to execute the following operations:
 * Import active and not yet existing small ads from your harddisk to the site
 * Import all small ads from your harddisk to the site
 
-You have to provide your account credentials (will not be stored in any way). Small ad information is stored in human-readable JSON format on your harddisk (see `/data` directory).
+Typical use case would be to refresh ('push up') your existing small ads via the following operations:
 
-Account and small ad data are handled separately. Thus it is possible to import data from one account into another.
+1. Export (download) all existing small ads to your harddisk
+2. Delete all active small ads at the site
+3. Import (upload) all active small ads from hardisk to the site
+
+When starting the application you have to provide your ebay-kleinanzeigen account credentials. These will not be stored in any way on your harddisk. During export, small ad information (including images) is stored in human-readable JSON format on your harddisk (see `/data` directory).
+
+Account and small ad data are handled separately. Thus it is possible to import data from one account into another. To move all you small ads from account A to account B use the following operations:
+
+1. Login to account A at start of application
+2. Export (download) all existing small ads to your harddisk
+3. Set account credentials for account B
+4. Import (upload) all active small ads from hardisk to the site
 
 ## Requirements
 
