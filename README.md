@@ -6,7 +6,7 @@ Does not use the official ebay-kleinanzeigen classifieds API, but uses Selenide 
 
 ## Requirements
 
-Requires a webbrowser and webdriver (chromedriver, geckodriver etc.). By default the application uses Chrome. You can choose the type of browser in the project properties or via commandline switch. Expects the webdriver to be available via your path variable, e.g. in `/user/bin/chromedriver`, but you can specify whatever location (see section commandline switches).
+Requires a webbrowser, webdriver (chromedriver, geckodriver etc.) and Java. By default the application uses Chrome. You can choose the type of browser in the project properties or via commandline switch. Expects the webdriver to be available via your path variable, e.g. in `/user/bin/chromedriver`, but you can specify whatever location (see section commandline switches).
 
 ## Build and run
 
