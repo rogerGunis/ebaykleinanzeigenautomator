@@ -4,7 +4,7 @@ Automates small ad (classifieds) export and import from and to [ebay-kleinanzeig
 
 Does not use the official ebay-kleinanzeigen classifieds API, but uses Selenide to browse the site and simulate user input. (The official API was not available at the time of writing this application.)
 
-Provides a small console UI to execute the following options:
+Provides a small console UI to execute the following operations:
 
 * Export all existing small ads from the site to your harddisk
 * Activate all small ads at the site
@@ -15,7 +15,7 @@ Provides a small console UI to execute the following options:
 * Import active and not yet existing small ads from your harddisk to the site
 * Import all small ads from your harddisk to the site
 
-You have to provide your account credentials (will not be stored in any way). Stores small ad information in human-readable JSON format on your harddisk.
+You have to provide your account credentials (will not be stored in any way). Small ad information is stored in human-readable JSON format on your harddisk (see `/data` directory).
 
 Account and small ad data are handled separately. Thus it is possible to import data from one account into another.
 
@@ -36,7 +36,7 @@ You might wanna play with the following command line options:
 -project.dataDirectory=./data
 -session=123456789
 ```
-The session parameter will resume a previous session. The session identifier provided can be found in the JSON or the directory name under /data.
+The `session` parameter will resume a previous session. The session identifier provided can be found in the JSON or the directory name under `/data`.
 
 In case you want to start the application from within your Java IDE there are further options in config/project.properties, e.g. enabling debug output. By default the application is configured for console interaction and headless browser usage.
 
