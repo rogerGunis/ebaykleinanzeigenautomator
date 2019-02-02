@@ -38,9 +38,7 @@ public class EditAdDetailsPage extends BrowsingPage
 
     public boolean hasCaptcha()
     {
-    	return false;
-    	// TODO
-    	//return $("").is(visible);
+    	return $("#postAd-recaptcha").is(visible);
     }
 
     public String getPublishBlockerMessage()
