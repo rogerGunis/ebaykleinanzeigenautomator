@@ -40,7 +40,7 @@ public class ImportSmallAdContainerFlow
             boolean errorOccurredWhilePublishing = false;
             boolean publishingCurrentlyBlocked = false;
 
-            while (smallAdsIterator.hasNext() || publishingCurrentlyBlocked)
+            while (smallAdsIterator.hasNext() && !publishingCurrentlyBlocked)
             {
                 SmallAd smallAd = smallAdsIterator.next();
                 
