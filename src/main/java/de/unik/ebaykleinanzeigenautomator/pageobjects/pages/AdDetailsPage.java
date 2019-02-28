@@ -149,6 +149,10 @@ public class AdDetailsPage extends BrowsingPage
 
                 // Rename loaded file to new filename
                 imageFile.renameTo(newFile);
+                
+                // Selenide will create a directory per image download which we will now remove 
+                File remainingDownloadDirectory = new File(imageFile.getPath().replace(imageFile.getName(), ""));
+                remainingDownloadDirectory.delete();
 
                 // Store filename
                 images.add(newFile.getName());
