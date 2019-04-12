@@ -32,6 +32,7 @@ public class DeleteSmallAdsFlow
         }
         catch (Throwable t)
         {
+        	// Unfortunately Selenide dumps Throwables on us        	
             System.out.println("Failed to delete small ads");
             System.out.println("Error was: " + t.toString());
 

@@ -10,6 +10,7 @@ public class OpenHomepageFlow
 {
     public Homepage run()
     {
+    	// This mini flow will only be used by other flows, so we do not handle error scenarios here but in the calling flows
         clearBrowserCookies();
 
         open(Context.get().getConfiguration().siteUrl());

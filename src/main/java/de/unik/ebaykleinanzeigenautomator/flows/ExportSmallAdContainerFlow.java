@@ -26,7 +26,7 @@ public class ExportSmallAdContainerFlow
         {
             if (smallAdContainer == null)
             {
-                throw new Throwable("Small ad container was not initialized");
+                throw new Exception("Small ad container was not initialized");
             }
 
             Homepage homepage = new OpenHomepageFlow().run();
@@ -41,6 +41,7 @@ public class ExportSmallAdContainerFlow
         }
         catch (Throwable t)
         {
+        	// Unfortunately Selenide dumps Throwables on us
             System.out.println("Failed to export small ads");
             System.out.println("Error was: " + t.toString());
 

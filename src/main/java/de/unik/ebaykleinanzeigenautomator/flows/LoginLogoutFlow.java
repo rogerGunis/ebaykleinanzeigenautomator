@@ -20,6 +20,7 @@ public class LoginLogoutFlow
         }
         catch (Throwable t)
         {
+        	// Unfortunately Selenide dumps Throwables on us
             System.out.println("Failed to login and logout. Wrong credentials?");
             System.out.println("Error was: " + t.toString());
 

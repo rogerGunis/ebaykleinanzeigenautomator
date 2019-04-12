@@ -1,6 +1,7 @@
 package de.unik.ebaykleinanzeigenautomator;
 
 import java.io.BufferedReader;
+import java.io.IOError;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
@@ -69,18 +70,41 @@ public class App
 
     private void readInput(boolean isPassword)
     {
-    	BufferedReader input = null;
-        try
+        inputString = "";
+        
+        if(!Context.get().getConfiguration().systemConsoleInput())
         {
-            inputString = "";
-            
-            if(!Context.get().getConfiguration().systemConsoleInput())
+        	BufferedReader input = null;
+        	try
+        	{
+        		input = new BufferedReader(new InputStreamReader(System.in));
+        		inputString = input.readLine();
+        	}
+            catch (IOException ioe)
             {
-                input = new BufferedReader(new InputStreamReader(System.in));
-                inputString = input.readLine();
+                System.out.println("\n" + INPUT_OUTPUT_ERROR);
+                System.out.println("Error was: " + ioe.toString());
             }
-            else
+            finally
             {
+            	if(input != null)
+            	{
+            		try
+            		{
+            			input.close();
+            		}
+            		catch(IOException e)
+            		{
+                        System.out.println("\n" + INPUT_OUTPUT_ERROR);
+                        System.out.println("Error was: " + e.toString());
+            		}
+            	}
+            }
+        }
+        else
+        {
+        	try
+        	{
                 if(!isPassword)
                 {
                     inputString = System.console().readLine();
@@ -89,27 +113,12 @@ public class App
                 {
                     inputString = String.valueOf(System.console().readPassword());
                 }
-            }
-        }
-        catch (Throwable t)
-        {
-            System.out.println("\n" + INPUT_OUTPUT_ERROR);
-            System.out.println("Error was: " + t.toString());
-        }
-        finally
-        {
-        	if(input != null)
-        	{
-        		try
-        		{
-        			input.close();
-        		}
-        		catch(IOException e)
-        		{
-                    System.out.println("\n" + INPUT_OUTPUT_ERROR);
-                    System.out.println("Error was: " + e.toString());
-        		}
         	}
+            catch(IOError ioe)
+            {
+                System.out.println("\n" + INPUT_OUTPUT_ERROR);
+                System.out.println("Error was: " + ioe.toString());
+            }
         }
     }
 

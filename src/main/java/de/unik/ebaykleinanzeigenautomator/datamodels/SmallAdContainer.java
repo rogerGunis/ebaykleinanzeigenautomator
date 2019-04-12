@@ -104,7 +104,7 @@ public class SmallAdContainer
         {
             fromJSON(new JSONObject(jsonString));
         }
-        catch (Exception e)
+        catch (ParseException e)
         {
             System.out.println("Failed to interpret file " + inputFilePath);
             System.out.println("Error was: " + e.toString());
