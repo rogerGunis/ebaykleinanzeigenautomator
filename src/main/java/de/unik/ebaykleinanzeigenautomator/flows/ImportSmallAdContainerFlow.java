@@ -116,7 +116,7 @@ public class ImportSmallAdContainerFlow
         catch (Throwable t)
         {
             System.out.println("Failed to import small ads");
-            System.out.println("Error was: " + t.getMessage());
+            System.out.println("Error was: " + t.toString());
 
             if (Context.get().getConfiguration().projectDebug())
             {

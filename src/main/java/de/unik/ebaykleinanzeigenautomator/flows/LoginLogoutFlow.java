@@ -21,7 +21,7 @@ public class LoginLogoutFlow
         catch (Throwable t)
         {
             System.out.println("Failed to login and logout. Wrong credentials?");
-            System.out.println("Error was: " + t.getMessage());
+            System.out.println("Error was: " + t.toString());
 
             if (Context.get().getConfiguration().projectDebug())
             {

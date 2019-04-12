@@ -92,7 +92,7 @@ public class App
         catch (Throwable t)
         {
             System.out.println("\n" + INPUT_OUTPUT_ERROR);
-            System.out.println("Error was: " + t.getMessage());
+            System.out.println("Error was: " + t.toString());
         }
     }
 

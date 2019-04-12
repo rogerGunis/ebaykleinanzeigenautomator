@@ -160,7 +160,7 @@ public class AdDetailsPage extends BrowsingPage
             catch (IOException e)
             {
                 System.out.print("Failed to download image from " + imageUrl);
-                System.out.print("Error was: " + e.getMessage());
+                System.out.print("Error was: " + e.toString());
 
                 if (Context.get().getConfiguration().projectDebug())
                 {

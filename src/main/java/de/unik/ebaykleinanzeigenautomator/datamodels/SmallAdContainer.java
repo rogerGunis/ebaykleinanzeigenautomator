@@ -90,7 +90,7 @@ public class SmallAdContainer
         catch (IOException e)
         {
             System.out.println("Failed to read file from " + inputFilePath);
-            System.out.println("Error was: " + e.getMessage());
+            System.out.println("Error was: " + e.toString());
 
             if (Context.get().getConfiguration().projectDebug())
             {
@@ -107,7 +107,7 @@ public class SmallAdContainer
         catch (Exception e)
         {
             System.out.println("Failed to interpret file " + inputFilePath);
-            System.out.println("Error was: " + e.getMessage());
+            System.out.println("Error was: " + e.toString());
 
             if (Context.get().getConfiguration().projectDebug())
             {
@@ -136,7 +136,7 @@ public class SmallAdContainer
         catch (IOException e)
         {
             System.out.println("Failed to create directory at " + outputFilePath.getParent());
-            System.out.println("Error was: " + e.getMessage());
+            System.out.println("Error was: " + e.toString());
 
             if (Context.get().getConfiguration().projectDebug())
             {
@@ -153,7 +153,7 @@ public class SmallAdContainer
         catch (IOException e)
         {
             System.out.println("Failed to write file at " + outputFilePath);
-            System.out.println("Error was: " + e.getMessage());
+            System.out.println("Error was: " + e.toString());
 
             if (Context.get().getConfiguration().projectDebug())
             {

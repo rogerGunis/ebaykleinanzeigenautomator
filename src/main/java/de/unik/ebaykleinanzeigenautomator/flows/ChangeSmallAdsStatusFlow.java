@@ -33,7 +33,7 @@ public class ChangeSmallAdsStatusFlow
         catch (Throwable t)
         {
             System.out.println("Failed to " + (activate ? "activate" : "deactivate") + " small ads");
-            System.out.println("Error was: " + t.getMessage());
+            System.out.println("Error was: " + t.toString());
 
             if (Context.get().getConfiguration().projectDebug())
             {
