@@ -1,6 +1,7 @@
 package de.unik.ebaykleinanzeigenautomator;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 
 import de.unik.ebaykleinanzeigenautomator.datamodels.SmallAdContainer;
@@ -68,13 +69,14 @@ public class App
 
     private void readInput(boolean isPassword)
     {
+    	BufferedReader input = null;
         try
         {
             inputString = "";
             
             if(!Context.get().getConfiguration().systemConsoleInput())
             {
-                BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+                input = new BufferedReader(new InputStreamReader(System.in));
                 inputString = input.readLine();
             }
             else
@@ -93,6 +95,21 @@ public class App
         {
             System.out.println("\n" + INPUT_OUTPUT_ERROR);
             System.out.println("Error was: " + t.toString());
+        }
+        finally
+        {
+        	if(input != null)
+        	{
+        		try
+        		{
+        			input.close();
+        		}
+        		catch(IOException e)
+        		{
+                    System.out.println("\n" + INPUT_OUTPUT_ERROR);
+                    System.out.println("Error was: " + e.toString());
+        		}
+        	}
         }
     }
 
