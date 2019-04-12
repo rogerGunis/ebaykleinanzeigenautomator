@@ -16,11 +16,11 @@ public class LoginPage extends BrowsingPage
         $("#login").should(exist);
     }
 
-    public void fillLoginDetails() throws Exception
+    public void fillLoginDetails() throws AssertionError
     {
         if (!Context.get().getAccount().isInitialized())
         {
-            throw new Exception("The provided ebay-kleinanzeigen account credentials are invalid.");
+            throw new AssertionError("The provided ebay-kleinanzeigen account credentials are invalid.");
         }
 
         $("#login-email").shouldBe(visible).scrollTo().val(Context.get().getAccount().username);

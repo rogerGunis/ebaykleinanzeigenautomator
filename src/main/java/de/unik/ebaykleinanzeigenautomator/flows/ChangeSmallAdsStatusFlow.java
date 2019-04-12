@@ -30,15 +30,14 @@ public class ChangeSmallAdsStatusFlow
 
             managedAdsPage.header.clickLogoutLink();
         }
-        catch (Throwable t)
+        catch (RuntimeException | AssertionError e)
         {
-        	// Unfortunately Selenide dumps Throwables on us
             System.out.println("Failed to " + (activate ? "activate" : "deactivate") + " small ads");
-            System.out.println("Error was: " + t.toString());
+            System.out.println("Error was: " + e.toString());
 
             if (Context.get().getConfiguration().projectDebug())
             {
-                t.printStackTrace();
+                e.printStackTrace();
             }
 
             return false;

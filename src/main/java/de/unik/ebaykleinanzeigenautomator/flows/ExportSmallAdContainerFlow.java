@@ -26,7 +26,7 @@ public class ExportSmallAdContainerFlow
         {
             if (smallAdContainer == null)
             {
-                throw new Exception("Small ad container was not initialized");
+                throw new AssertionError("Small ad container was not initialized");
             }
 
             Homepage homepage = new OpenHomepageFlow().run();
@@ -39,15 +39,14 @@ public class ExportSmallAdContainerFlow
             managedAdsPage.exportAllSmallAds(smallAdContainer);
             managedAdsPage.header.clickLogoutLink();
         }
-        catch (Throwable t)
+        catch (RuntimeException | AssertionError e)
         {
-        	// Unfortunately Selenide dumps Throwables on us
             System.out.println("Failed to export small ads");
-            System.out.println("Error was: " + t.toString());
+            System.out.println("Error was: " + e.toString());
 
             if (Context.get().getConfiguration().projectDebug())
             {
-                t.printStackTrace();
+                e.printStackTrace();
             }
 
             return false;

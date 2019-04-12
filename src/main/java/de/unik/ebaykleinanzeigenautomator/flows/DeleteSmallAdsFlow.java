@@ -30,15 +30,14 @@ public class DeleteSmallAdsFlow
 
             managedAdsPage.header.clickLogoutLink();
         }
-        catch (Throwable t)
-        {
-        	// Unfortunately Selenide dumps Throwables on us        	
+        catch (RuntimeException | AssertionError e)
+        {   	
             System.out.println("Failed to delete small ads");
-            System.out.println("Error was: " + t.toString());
+            System.out.println("Error was: " + e.toString());
 
             if (Context.get().getConfiguration().projectDebug())
             {
-                t.printStackTrace();
+                e.printStackTrace();
             }
 
             return false;

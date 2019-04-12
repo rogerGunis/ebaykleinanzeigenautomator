@@ -20,8 +20,6 @@ public class App
 
     private static final String COMMANDLINE_PARAMETER_SESSION = "-session=";
     
-    private String inputString = null;
-
     private boolean exit = false;
 
     public App(String args[])
@@ -68,10 +66,10 @@ public class App
         System.out.print("> ");
     }
 
-    private void readInput(boolean isPassword)
+    private String readInput(boolean isPassword)
     {
-        inputString = "";
-        
+    	String inputString = null;
+    	
         if(!Context.get().getConfiguration().systemConsoleInput())
         {
         	BufferedReader input = null;
@@ -85,21 +83,21 @@ public class App
                 System.out.println("\n" + INPUT_OUTPUT_ERROR);
                 System.out.println("Error was: " + ioe.toString());
             }
-            finally
-            {
-            	if(input != null)
-            	{
-            		try
-            		{
-            			input.close();
-            		}
-            		catch(IOException e)
-            		{
-                        System.out.println("\n" + INPUT_OUTPUT_ERROR);
-                        System.out.println("Error was: " + e.toString());
-            		}
-            	}
-            }
+//            finally
+//            {
+//            	if(input != null)
+//            	{
+//            		try
+//            		{
+//            			input.close();
+//            		}
+//            		catch(IOException e)
+//            		{
+//                        System.out.println("\n" + INPUT_OUTPUT_ERROR);
+//                        System.out.println("Error was: " + e.toString());
+//            		}
+//            	}
+//            }
         }
         else
         {
@@ -120,14 +118,17 @@ public class App
                 System.out.println("Error was: " + ioe.toString());
             }
         }
+        
+        return inputString;
     }
 
-    private void interpretInput()
+    private void handleMainMenuInput()
     {
+    	// Grab input and convert to integer
         int input = 0;
         try
         {
-            input = Integer.parseInt(inputString);
+            input = Integer.parseInt(readInput(false));
         }
         catch (NumberFormatException nfe)
         {
@@ -274,12 +275,10 @@ public class App
         System.out.println("The following inputs will not be saved to harddisk.\n");
 
         System.out.print("Please enter your username (email) for ebay-kleinanzeigen.de and press enter: ");
-        readInput(false);
-        String username = inputString;
+        String username = readInput(false);
 
         System.out.print("Please enter your password for ebay-kleinanzeigen.de and press enter: ");
-        readInput(true);
-        String password = inputString;
+        String password = readInput(true);
         
         System.out.println("");
 
@@ -291,8 +290,7 @@ public class App
         do
         {
             printMainMenu();
-            readInput(false);
-            interpretInput();
+            handleMainMenuInput();
         }
         while (!exit);
     }

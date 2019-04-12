@@ -8,25 +8,24 @@ public class LoginLogoutFlow
 {
     public boolean run()
     {
-        try
+    	try
+    	{
+	        Homepage homepage = new OpenHomepageFlow().run();
+	        LoginPage loginPage = homepage.header.clickLoginLink();
+	
+	        loginPage.fillLoginDetails();
+	        homepage = loginPage.clickLogin();
+	        
+	        homepage.header.clickLogoutLink();
+    	}
+        catch (RuntimeException | AssertionError e)
         {
-            Homepage homepage = new OpenHomepageFlow().run();
-            LoginPage loginPage = homepage.header.clickLoginLink();
-    
-            loginPage.fillLoginDetails();
-            homepage = loginPage.clickLogin();
-            
-            homepage.header.clickLogoutLink();
-        }
-        catch (Throwable t)
-        {
-        	// Unfortunately Selenide dumps Throwables on us
-            System.out.println("Failed to login and logout. Wrong credentials?");
-            System.out.println("Error was: " + t.toString());
+            System.out.println("Failed to login. Please provide valid account credentials.");
+            System.out.println("Error was: " + e.toString());
 
             if (Context.get().getConfiguration().projectDebug())
             {
-                t.printStackTrace();
+                e.printStackTrace();
             }
 
             return false;

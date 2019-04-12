@@ -26,7 +26,7 @@ public class PostAdSelectCategoryPage extends BrowsingPage
         $("#postad-step1").should(exist);
     }
 
-    public void selectCategories(SmallAd smallAd) throws Exception
+    public void selectCategories(SmallAd smallAd) throws AssertionError
     {
         List<String> categories = smallAd.categories;
         SelenideElement selectedCategory = null;
@@ -66,7 +66,7 @@ public class PostAdSelectCategoryPage extends BrowsingPage
         return category;
     }
 
-    private SelenideElement selectCategoryViaAttributes(Hashtable<String, String> attributes, int columnIndex) throws Exception
+    private SelenideElement selectCategoryViaAttributes(Hashtable<String, String> attributes, int columnIndex) throws AssertionError
     {
         // Get categories of column
         ElementsCollection categories = getCategoriesOfColumn(columnIndex);
@@ -79,7 +79,7 @@ public class PostAdSelectCategoryPage extends BrowsingPage
         String attributeValue = attributes.get(attributeKey);
         if (attributeValue == null)
         {
-            throw new Exception("Failed to find attribute category " + attributeKey);
+            throw new AssertionError("Failed to find attribute category " + attributeKey);
         }
 
         // Get the category with given name
