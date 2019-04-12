@@ -72,32 +72,16 @@ public class App
     	
         if(!Context.get().getConfiguration().systemConsoleInput())
         {
-        	BufferedReader input = null;
         	try
         	{
-        		input = new BufferedReader(new InputStreamReader(System.in));
-        		inputString = input.readLine();
+        		// No need to close System.in as it is created by the JVM
+        		inputString = new BufferedReader(new InputStreamReader(System.in)).readLine();
         	}
             catch (IOException ioe)
             {
                 System.out.println("\n" + INPUT_OUTPUT_ERROR);
                 System.out.println("Error was: " + ioe.toString());
             }
-//            finally
-//            {
-//            	if(input != null)
-//            	{
-//            		try
-//            		{
-//            			input.close();
-//            		}
-//            		catch(IOException e)
-//            		{
-//                        System.out.println("\n" + INPUT_OUTPUT_ERROR);
-//                        System.out.println("Error was: " + e.toString());
-//            		}
-//            	}
-//            }
         }
         else
         {
