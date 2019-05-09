@@ -29,9 +29,11 @@ public class ManagedAdsPage extends BrowsingPage
 
     private SelenideElement itemList = managedAdsContent.$(".itemlist");
     
-    private int itemCountPerPage;
-    private int itemCounter;
+    private int totalItemPerPageCount;
 
+    private int itemPerPageCounter;
+    
+    private int itemCounter;
 
     @Override
     public void validateIsExpectedPage()
@@ -41,34 +43,39 @@ public class ManagedAdsPage extends BrowsingPage
         $("#my-manageads").should(exist);
     }
     
+    public void queryAllSmallAds()
+    {
+    	processSmallAds(null, s -> true, s -> querySmallAdDetails(s), false);
+    }
+    
     public void activateAllSmallAds()
     {
-        processSmallAds("Activated", null, s -> isInactive(s), s -> activateSmallAd(s), false);
+        processSmallAds(null, s -> isInactive(s), s -> activateSmallAd(s), false);
     }
 
     public void deactivateAllSmallAds()
     {
-        processSmallAds("Deactivated", null, s -> isActive(s), s -> deactivateSmallAd(s), false);
+        processSmallAds(null, s -> isActive(s), s -> deactivateSmallAd(s), false);
     }
 
     public void deleteInactiveSmallAds()
     {
-        processSmallAds("Deleted", null, s -> isInactive(s), s -> deleteSmallAd(s), true);
+        processSmallAds(null, s -> isInactive(s), s -> deleteSmallAd(s), true);
     }
 
     public void deleteActiveSmallAds()
     {
-        processSmallAds("Deleted", null, s -> isActive(s), s -> deleteSmallAd(s), true);
+        processSmallAds(null, s -> isActive(s), s -> deleteSmallAd(s), true);
     }
 
     public void exportAllSmallAds(SmallAdContainer smallAdContainer)
     {
-        processSmallAds("Exported", smallAdContainer, s -> { return true; }, s -> exportSmallAd(s), false);
+        processSmallAds(smallAdContainer, s -> { return true; }, s -> exportSmallAd(s), false);
     }
     
     public boolean smallAdExists(SmallAd smallAd)
     {
-        resetItemCounter();
+        resetItemPerPageCounter();
 
         while (moreItemsAvailable())
         {
@@ -85,17 +92,18 @@ public class ManagedAdsPage extends BrowsingPage
             }
             
             // Advance
-            itemCounter++;
+            itemPerPageCounter++;
         }
         
         return false;
     }
-
-    private void processSmallAds(String operation, SmallAdContainer smallAdContainer, Predicate<SelenideElement> predicate, Function<SelenideElement, SmallAd> function, boolean modifiesItemList)
+    
+    private void processSmallAds(SmallAdContainer smallAdContainer, Predicate<SelenideElement> predicate, Function<SelenideElement, SmallAd> function, boolean modifiesItemList)
     {
         boolean applied = false;
 
-        resetItemCounter();
+        resetItemPerPageCounter();
+        itemCounter = 0;
 
         while (moreItemsAvailable())
         {
@@ -119,23 +127,19 @@ public class ManagedAdsPage extends BrowsingPage
                     function.apply(currentSmallAdElement);
                 }
 
-                // Get title and print status
-                String title = currentSmallAdElement.find(".manageaditem-main .manageaditem-ad > h2 > a").shouldBe(visible).text();
-                System.out.println(operation + " " + title);
-
                 // If our operation modifies the item list, we need to adjust the counters
                 if (modifiesItemList)
                 {
                     // The modification only decreased out item list size if this was the only page with items
                     if(!multiPageItemList)
                     {
-                        itemCountPerPage--;
+                        totalItemPerPageCount--;
                     }
                     
-                    itemCounter--;
+                    itemPerPageCounter--;
 
                     // Validate that our item list has the proper item count
-                    itemList.findAll(SMALL_AD_ITEM_LOCATOR).shouldHaveSize(itemCountPerPage);
+                    itemList.findAll(SMALL_AD_ITEM_LOCATOR).shouldHaveSize(totalItemPerPageCount);
                 }
                 
                 // Indicate that we could execute our operation at least once
@@ -143,6 +147,7 @@ public class ManagedAdsPage extends BrowsingPage
             }
             
             // Advance
+            itemPerPageCounter++;
             itemCounter++;
         }
 
@@ -154,7 +159,7 @@ public class ManagedAdsPage extends BrowsingPage
     
     private boolean moreItemsAvailable()
     {
-        if(itemCounter == itemCountPerPage)
+        if(itemPerPageCounter == totalItemPerPageCount)
         {
             // Handle pagination
             if(pagination.isPossible())
@@ -162,36 +167,22 @@ public class ManagedAdsPage extends BrowsingPage
                 pagination.apply();
 
                 // Retrieve new item list information and reset counter
-                resetItemCounter();
+                resetItemPerPageCounter();
             }
         }
         
-        return itemCounter < itemCountPerPage;
+        return itemPerPageCounter < totalItemPerPageCount;
     }
     
-    private void resetItemCounter()
+    private void resetItemPerPageCounter()
     {
-        itemCountPerPage = itemList.should(exist).findAll(SMALL_AD_ITEM_LOCATOR).size();
-        itemCounter = 0;
+        totalItemPerPageCount = itemList.should(exist).findAll(SMALL_AD_ITEM_LOCATOR).size();
+        itemPerPageCounter = 0;
     }
     
     private SelenideElement getCurrentItemFromPage()
     {
-        return itemList.findAll(SMALL_AD_ITEM_LOCATOR).get(itemCounter).should(exist);
-    }
-
-    private boolean isInactive(SelenideElement smallAdElement)
-    {
-        smallAdElement.$("a.managead-listitem-action-activate.is-hidden, a.managead-listitem-action-deactivate.is-hidden").should(exist).scrollTo();
-
-        return smallAdElement.$("a.managead-listitem-action-activate").is(visible);
-    }
-
-    private SmallAd activateSmallAd(SelenideElement smallAdElement)
-    {
-        smallAdElement.$("a.managead-listitem-action-activate").should(exist).scrollTo().shouldBe(visible).click();
-
-        return null;
+        return itemList.findAll(SMALL_AD_ITEM_LOCATOR).get(itemPerPageCounter).should(exist);
     }
 
     private boolean isActive(SelenideElement smallAdElement)
@@ -201,9 +192,57 @@ public class ManagedAdsPage extends BrowsingPage
         return smallAdElement.$("a.managead-listitem-action-deactivate").is(visible);
     }
 
+    private boolean isInactive(SelenideElement smallAdElement)
+    {
+        smallAdElement.$("a.managead-listitem-action-activate.is-hidden, a.managead-listitem-action-deactivate.is-hidden").should(exist).scrollTo();
+
+        return smallAdElement.$("a.managead-listitem-action-activate").is(visible);
+    }
+    
+    private void printElementOperationStatus(SelenideElement smallAdElement, String operation, String status)
+    {
+        // Get title
+        String title = smallAdElement.find(".manageaditem-main .manageaditem-ad > h2 > a").should(exist).text();
+        
+        // Print status
+        System.out.println(operation + (operation.isEmpty() ? "" : " ") + title + (title.isEmpty() ? "" : " ") + status);
+    }
+    
+    private SmallAd querySmallAdDetails(SelenideElement smallAdElement)
+    {
+        // Lets see what's going on
+        smallAdElement.scrollTo();
+
+        // Get activation status
+        boolean isActive = isActive(smallAdElement);
+    	
+        // Get id
+        smallAdElement.shouldHave(attribute("data-adid"));
+        String id = smallAdElement.getAttribute("data-adid").trim();
+        
+        // Get end date
+        String endDate = smallAdElement.$(".manageaditem-main .manageaditem-ad .managead-listitem-enddate").should(exist).getText().trim();
+
+        // Print the details
+        printElementOperationStatus(smallAdElement, "(" + itemCounter + ")", "- id: " + id + ", active: " + isActive + ", end date: " + endDate);
+        
+        return null;
+    }
+
+    private SmallAd activateSmallAd(SelenideElement smallAdElement)
+    {
+        smallAdElement.$("a.managead-listitem-action-activate").should(exist).scrollTo().shouldBe(visible).click();
+        
+        printElementOperationStatus(smallAdElement, "Activated", "");
+
+        return null;
+    }
+
     private SmallAd deactivateSmallAd(SelenideElement smallAdElement)
     {
         smallAdElement.$("a.managead-listitem-action-deactivate").should(exist).scrollTo().shouldBe(visible).click();
+        
+        printElementOperationStatus(smallAdElement, "Deactivated", "");
 
         return null;
     }
@@ -221,6 +260,8 @@ public class ManagedAdsPage extends BrowsingPage
 
         // Expect modal to be hidden
         $("#modal-bulk-delete-ad").shouldNotBe(visible);
+        
+        printElementOperationStatus(smallAdElement, "Deleted", "");
 
         return null;
     }
@@ -260,6 +301,8 @@ public class ManagedAdsPage extends BrowsingPage
         {
             deactivateSmallAd(smallAdElement);
         }
+        
+        printElementOperationStatus(smallAdElement, "Exported", "");
 
         return smallAd;
     }
@@ -270,8 +313,7 @@ public class ManagedAdsPage extends BrowsingPage
         smallAdElement.$("section.manageaditem-ad > h2 > a").should(exist).scrollTo().shouldBe(visible).click();
 
         // Create small ad detail page and export details
-        AdDetailsPage adDetailPage = new AdDetailsPage();
-        adDetailPage.exportAdDetails(smallAd);
+        new AdDetailsPage().exportAdDetails(smallAd);
 
         // Go back to small ad overview (keeps pagination in tact)
         Selenide.back();
