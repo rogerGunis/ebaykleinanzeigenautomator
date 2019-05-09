@@ -20,8 +20,6 @@ public class Context
     private Context()
     {
         configuration = ConfigFactory.create(Configuration.class, System.getProperties(), System.getenv());
-
-        resetSessionIdentifier(null);
     }
 
     public static void initialize()
@@ -114,6 +112,11 @@ public class Context
             sessionIdentifier = identifier;
         }
     }
+    
+    public boolean isValidSession()
+    {
+    	return sessionIdentifier != null;
+    }
 
     public void setAccount(String username, String password)
     {
@@ -128,11 +131,21 @@ public class Context
 
     public String getWorkingDirectoryPath()
     {
-        return Context.get().getConfiguration().projectDataDirectory() + "/" + Context.get().getSessionIdentifier() + "/";
+        return getWorkingDirectoryPath(Context.get().getSessionIdentifier());
+    }
+
+    public String getWorkingDirectoryPath(String sessionIdentifier)
+    {
+        return Context.get().getConfiguration().projectDataDirectory() + "/" + sessionIdentifier + "/";
     }
 
     public String getWorkingFilePath()
     {
-        return getWorkingDirectoryPath() + Context.get().getConfiguration().projectDataFile();
+        return getWorkingFilePath(sessionIdentifier);
+    }
+
+    public String getWorkingFilePath(String sessionIdentifier)
+    {
+        return getWorkingDirectoryPath(sessionIdentifier) + Context.get().getConfiguration().projectDataFile();
     }
 }

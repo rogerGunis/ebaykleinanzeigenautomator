@@ -1,6 +1,11 @@
 package de.unik.ebaykleinanzeigenautomator;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.nio.file.Files;
+
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.IOError;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,7 +21,7 @@ import de.unik.ebaykleinanzeigenautomator.util.Context;
 public class App
 {
     private static final String INPUT_OUTPUT_ERROR = "An input/output error occured while trying to read from your input device.";
-    private static final String INVALID_INPUT_ERROR = "Please choose between options 0 - 9. Enter the digit of the option you want. No other inputs are allowed.";
+    private static final String INVALID_INPUT_ERROR = "Please choose between options 0 - A. Enter the character of the option you want. No other inputs are allowed.";
 
     private static final String COMMANDLINE_PARAMETER_SESSION = "-session=";
     
@@ -36,25 +41,34 @@ public class App
     {
         if(parameter.toLowerCase().startsWith(COMMANDLINE_PARAMETER_SESSION))
         {
-            String sessionIdentifier = parameter.replaceAll(COMMANDLINE_PARAMETER_SESSION, "").trim();
-            Context.get().resetSessionIdentifier(sessionIdentifier);
-            
-            System.out.println("\nUsing session identifier: " + Context.get().getSessionIdentifier());
+        	handleSessionIdentifierReset(parameter.replaceAll(COMMANDLINE_PARAMETER_SESSION, "").trim());
         }
     }
-
+    
     private void printTitle()
     {
-        System.out.println("\n\nEbay Kleinanzeigen Automator");
-        System.out.println("----------------------------\n");
+    	System.out.println("");
+        System.out.println("Ebay Kleinanzeigen Automator");
+        System.out.println("----------------------------");
+    }
+    
+    private void printSessionIdentifier()
+    {
+    	if(Context.get().isValidSession())
+    	{
+    		System.out.println("");
+    		System.out.println("Using session identifier: " + Context.get().getSessionIdentifier());
+    	}
     }
 
     private void printMainMenu()
     {
         printTitle();
+        printSessionIdentifier();
 
+        System.out.println("");
         System.out.println("1) Set account credentials");
-        System.out.println("2) Export all existing small ads from the site to your harddisk");
+        System.out.println("2) Export all existing small ads from the site to your harddisk in a new directory");
         System.out.println("3) Activate all small ads at the site");
         System.out.println("4) Deactivate all small ads at the site");
         System.out.println("5) Delete inactive small ads at the site");
@@ -62,6 +76,7 @@ public class App
         System.out.println("7) Import active small ads from your harddisk to the site");
         System.out.println("8) Import active and not yet existing small ads from your harddisk to the site");
         System.out.println("9) Import all small ads from your harddisk to the site");
+        System.out.println("A) Reset session identifier");
         System.out.println("0) Exit\n");
         System.out.print("> ");
     }
@@ -105,52 +120,78 @@ public class App
         
         return inputString;
     }
-
-    private void handleMainMenuInput()
+    
+    private boolean handleSessionIdentifierReset(String sessionIdentifier)
     {
-    	// Grab input and convert to integer
-        int input = 0;
-        try
+        if(!StringUtils.isBlank(sessionIdentifier) && Files.exists(new File(Context.get().getWorkingFilePath(sessionIdentifier)).toPath()))
         {
-            input = Integer.parseInt(readInput(false));
+            Context.get().resetSessionIdentifier(sessionIdentifier);
+        	
+        	return true;
         }
-        catch (NumberFormatException nfe)
+        else
         {
-            // Just ignore, we will handle it in our switch below
+        	System.out.println("\nDirectory for session identifier '" + sessionIdentifier + "' was not found, is invalid or did not contain a data file. "
+        			+ "Make sure your data is located at ./data/" + sessionIdentifier + ".\nKeeping previous session identifier.");
+        	
+        	return false;
         }
+    }
+    
+    public boolean handleReadCredentials()
+    {
+        System.out.println("The following inputs will not be saved to harddisk.\n");
 
-        // Interpret
+        System.out.print("Please enter your username (email) for ebay-kleinanzeigen.de and press enter: ");
+        String username = readInput(false).trim();
+
+        System.out.print("Please enter your password for ebay-kleinanzeigen.de and press enter: ");
+        String password = readInput(true);
+        
+        System.out.println("");
+
+        // Set the credentials to our account
+        Context.get().setAccount(username, password);
+        
+        // Verify the account by trying to login
+        return new LoginLogoutFlow().run();
+    }
+
+    private void handleMainMenuInput(String input)
+    {
         switch (input)
         {
-            case 1:
+            case "1":
                 {
                     System.out.println("\nSetting and verifying credentials\n");
 
-                    readCredentials();
-                    
-                    if(!new LoginLogoutFlow().run())
+                    if(!handleReadCredentials())
                     {
-                        return;
+                    	return;
                     }
                 }
                 break;
-            case 2:
+            case "2":
                 {
                     System.out.println("\nExporting small ads\n");
+    
+                    // Always (re)set the session identifier on each new export
+                    // Avoids overwriting existing data and ensures that we always work on newest data export
+                    Context.get().resetSessionIdentifier(null);
     
                     ExportSmallAdContainerFlow exportFlow = new ExportSmallAdContainerFlow();
                     if (!exportFlow.run())
                     {
                         return;
                     }
-    
+                    
                     if (!exportFlow.getSmallAdContainer().writeToDisk(Context.get().getWorkingFilePath()))
                     {
                         return;
                     }
                 }
                 break;
-            case 3:
+            case "3":
                 {
                     System.out.println("\nActivating small ads\n");
     
@@ -160,7 +201,7 @@ public class App
                     }
                 }
                 break;
-            case 4:
+            case "4":
                 {
                     System.out.println("\nDeactivating small ads\n");
     
@@ -170,7 +211,7 @@ public class App
                     }
                 }
                 break;
-            case 5:
+            case "5":
                 {
                     System.out.println("\nDeleting inactive small ads\n");
     
@@ -180,7 +221,7 @@ public class App
                     }
                 }
                 break;
-            case 6:
+            case "6":
                 {
                     System.out.println("\nDeleting active small ads\n");
     
@@ -190,10 +231,16 @@ public class App
                     }
                 }
                 break;
-            case 7:
+            case "7":
                 {
                     System.out.println("\nImporting active small ads\n");
-    
+                    
+                    if(!Context.get().isValidSession())
+                    {
+                    	System.out.println("Nothing to import. Be sure to export first.");
+                    	return;
+                    }
+                    
                     SmallAdContainer smallAdContainer = new SmallAdContainer();
                     if (!smallAdContainer.readFromDisk(Context.get().getWorkingFilePath()))
                     {
@@ -206,9 +253,15 @@ public class App
                     }
                 }
                 break;
-            case 8:
+            case "8":
                 {
                     System.out.println("\nImporting active and not yet existing small ads\n");
+                    
+                    if(!Context.get().isValidSession())
+                    {
+                    	System.out.println("Nothing to import. Be sure to export first.");
+                    	return;
+                    }
     
                     SmallAdContainer smallAdContainer = new SmallAdContainer();
                     if (!smallAdContainer.readFromDisk(Context.get().getWorkingFilePath()))
@@ -222,9 +275,15 @@ public class App
                     }
                 }
                 break;
-            case 9:
+            case "9":
                 {
                     System.out.println("\nImporting all small ads\n");
+                    
+                    if(!Context.get().isValidSession())
+                    {
+                    	System.out.println("Nothing to import. Be sure to export first.");
+                    	return;
+                    }
     
                     SmallAdContainer smallAdContainer = new SmallAdContainer();
                     if (!smallAdContainer.readFromDisk(Context.get().getWorkingFilePath()))
@@ -238,7 +297,17 @@ public class App
                     }
                 }
                 break;
-            case 0:
+            case "A":
+	            {
+	            	System.out.print("\nPlease enter the session identifier: ");
+	            	
+	            	if(!handleSessionIdentifierReset(readInput(false)))
+	            	{
+	            		return;
+	            	}
+	            }
+	            break;
+            case "0":
                 {
                     System.out.println("\nExiting");
                     exit = true;
@@ -254,27 +323,12 @@ public class App
         System.out.println("\nEverything ok");
     }
 
-    public void readCredentials()
-    {
-        System.out.println("The following inputs will not be saved to harddisk.\n");
-
-        System.out.print("Please enter your username (email) for ebay-kleinanzeigen.de and press enter: ");
-        String username = readInput(false);
-
-        System.out.print("Please enter your password for ebay-kleinanzeigen.de and press enter: ");
-        String password = readInput(true);
-        
-        System.out.println("");
-
-        Context.get().setAccount(username, password);
-    }
-
     public void mainLoop()
     {
         do
         {
             printMainMenu();
-            handleMainMenuInput();
+            handleMainMenuInput(readInput(false));
         }
         while (!exit);
     }
@@ -284,8 +338,7 @@ public class App
         if(!Context.get().getConfiguration().credentialsFromConfiguration())
         {
             printTitle();
-            readCredentials();
-            new LoginLogoutFlow().run();
+            handleMainMenuInput("1"); // Request credentials
         }
         
         mainLoop();
@@ -293,6 +346,9 @@ public class App
 
     public static void main(String[] args)
     {
+    	// TODO
+    	// FEATURE: Flow that queries all small ads and prints name, status, datum
+    	
         new App(args).run();
     }
 }
