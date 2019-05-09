@@ -43,7 +43,7 @@ public class SmallAd
     {
         boolean valid = !title.isEmpty() && !content.isEmpty() && (categories.size() >= 2);
 
-        if (!hasNoPrice || !isForFree)
+        if (!hasNoPrice && !isForFree)
         {
             valid &= !price.isEmpty();
         }
