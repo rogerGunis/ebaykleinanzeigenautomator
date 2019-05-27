@@ -139,7 +139,7 @@ public class App
         }
     }
     
-    public boolean handleReadCredentials()
+    private boolean handleReadCredentials()
     {
     	System.out.println("\nSetting and verifying credentials\n");
     	
@@ -160,7 +160,7 @@ public class App
         return new LoginLogoutFlow().run();
     }
 
-    private void intepretMainMenuInput(String input)
+    public void intepretMainMenuInput(String input)
     {
         switch (input.toLowerCase())
         {
@@ -365,7 +365,7 @@ public class App
         // Read initial credentials
         if(!Context.get().getConfiguration().credentialsFromConfiguration())
         {
-        	app.handleReadCredentials();
+        	app.intepretMainMenuInput("1");
         }
 
         // Execute main loop

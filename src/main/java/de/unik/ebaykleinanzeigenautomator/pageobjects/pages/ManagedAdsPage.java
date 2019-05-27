@@ -139,7 +139,7 @@ public class ManagedAdsPage extends BrowsingPage
                     itemPerPageCounter--;
 
                     // Validate that our item list has the proper item count
-                    itemList.findAll(SMALL_AD_ITEM_LOCATOR).shouldHaveSize(totalItemPerPageCount);
+                    itemList.should(exist).findAll(SMALL_AD_ITEM_LOCATOR).shouldHaveSize(totalItemPerPageCount);
                 }
                 
                 // Indicate that we could execute our operation at least once
