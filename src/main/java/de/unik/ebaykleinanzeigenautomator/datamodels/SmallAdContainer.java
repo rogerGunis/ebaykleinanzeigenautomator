@@ -1,5 +1,9 @@
 package de.unik.ebaykleinanzeigenautomator.datamodels;
 
+import de.unik.ebaykleinanzeigenautomator.util.Context;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -10,18 +14,13 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import de.unik.ebaykleinanzeigenautomator.util.Context;
-
 public class SmallAdContainer
 {
     public String contact = "";
 
     public String sessionIdentifier = "";
 
-    public List<SmallAd> smallAds = new ArrayList<SmallAd>();
+    public List<de.unik.ebaykleinanzeigenautomator.datamodels.SmallAd> smallAds = new ArrayList<>();
 
     public SmallAdContainer()
     {

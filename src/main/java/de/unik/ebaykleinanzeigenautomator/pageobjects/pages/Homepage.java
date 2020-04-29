@@ -1,8 +1,5 @@
 package de.unik.ebaykleinanzeigenautomator.pageobjects.pages;
 
-import static com.codeborne.selenide.Condition.exist;
-import static com.codeborne.selenide.Selenide.$;
-
 public class Homepage extends BrowsingPage
 {
     @Override
@@ -10,6 +7,6 @@ public class Homepage extends BrowsingPage
     {
         super.validateIsExpectedPage();
 
-        $("#home").should(exist);
+        // $("#home").should(exist);
     }
 }

@@ -1,26 +1,22 @@
 package de.unik.ebaykleinanzeigenautomator.pageobjects.pages;
 
-import static com.codeborne.selenide.CollectionCondition.sizeGreaterThanOrEqual;
-import static com.codeborne.selenide.Condition.attribute;
-import static com.codeborne.selenide.Condition.exist;
-import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
+import com.codeborne.selenide.CollectionCondition;
+import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.SelenideElement;
+import de.unik.ebaykleinanzeigenautomator.datamodels.SmallAd;
+import de.unik.ebaykleinanzeigenautomator.util.Context;
+import org.openqa.selenium.By;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Hashtable;
 import java.util.List;
 
-import org.openqa.selenium.By;
-
-import com.codeborne.selenide.CollectionCondition;
-import com.codeborne.selenide.ElementsCollection;
-import com.codeborne.selenide.Selenide;
-import com.codeborne.selenide.SelenideElement;
-
-import de.unik.ebaykleinanzeigenautomator.datamodels.SmallAd;
-import de.unik.ebaykleinanzeigenautomator.util.Context;
+import static com.codeborne.selenide.CollectionCondition.sizeGreaterThanOrEqual;
+import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
 
 public class AdDetailsPage extends BrowsingPage
 {
@@ -36,7 +32,7 @@ public class AdDetailsPage extends BrowsingPage
     {
         exportDetails(smallAd);
         exportCategories(smallAd.categories);
-        exportAttributes(smallAd.attributes);
+//        exportAttributes(smallAd.attributes);
 
         if (Context.get().getConfiguration().projectDownloadImages() && $("#viewad-images").exists())
         {
@@ -56,12 +52,12 @@ public class AdDetailsPage extends BrowsingPage
         smallAd.isOffer = !$(By.xpath("//script[contains(., 'WANTED')]")).exists();
         smallAd.title = $("#viewad-title").shouldBe(visible).text();
         smallAd.location = $("#viewad-locality").shouldBe(visible).text();
-        smallAd.creationDate = $("#viewad-details dl dd.attributelist--value:nth-of-type(2)").shouldBe(visible).text();
+        smallAd.creationDate = $("#viewad-extra-info > div:nth-child(1) > span").text().trim();
         smallAd.content = $("#viewad-description-text").shouldBe(visible).text();
 
         if ($("#viewad-price").exists())
         {
-            smallAd.price = $("#viewad-details section.l-container meta[itemprop='price'][content]").should(exist).getAttribute("content").trim();
+            smallAd.price = $("#viewad-main-info").findElement(By.cssSelector("meta[itemprop=\"price\"]")).getAttribute("content");
             smallAd.price = smallAd.price.replaceAll("\\.00", "");
 
             if (!smallAd.price.isEmpty())
