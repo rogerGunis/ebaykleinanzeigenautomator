@@ -12,8 +12,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import static com.codeborne.selenide.CollectionCondition.sizeGreaterThanOrEqual;
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
@@ -32,18 +33,21 @@ public class AdDetailsPage extends BrowsingPage
     {
         exportDetails(smallAd);
         exportCategories(smallAd.categories);
-//        exportAttributes(smallAd.attributes);
+        exportAttributes(smallAd.attributes);
 
-        if (Context.get().getConfiguration().projectDownloadImages() && $("#viewad-images").exists())
+        if (Context.get().getConfiguration().projectDownloadImages() && $(".galleryimage-element").exists())
         {
             // Open image zoom container
-            $("#viewad-image.is-clickable").scrollTo().shouldBe(visible).click();
+            $("#viewad-image").scrollTo().shouldBe(visible).click();
 
             // Store image information
             exportImages(smallAd.id, smallAd.images);
 
             // Close image zoom container
-            $("#viewad-lightbox a.mfp-close").scrollTo().shouldBe(visible).click();
+            $("#viewad-lightbox > a").scrollTo().shouldBe(visible).click();
+        }
+        else {
+            System.out.println("Skipping download images");
         }
     }
 
@@ -55,6 +59,8 @@ public class AdDetailsPage extends BrowsingPage
         smallAd.creationDate = $("#viewad-extra-info > div:nth-child(1) > span").text().trim();
         smallAd.content = $("#viewad-description-text").shouldBe(visible).text();
 
+        System.out.println("Exporting: " + smallAd.title);
+
         if ($("#viewad-price").exists())
         {
             smallAd.price = $("#viewad-main-info").findElement(By.cssSelector("meta[itemprop=\"price\"]")).getAttribute("content");
@@ -62,7 +68,7 @@ public class AdDetailsPage extends BrowsingPage
 
             if (!smallAd.price.isEmpty())
             {
-                smallAd.isFixedPrice = $("#viewad-price").should(exist).text().contains("VB") ? false : true;
+                smallAd.isFixedPrice = !$("#viewad-price").should(exist).text().contains("VB");
                 smallAd.isForFree = false;
                 smallAd.hasNoPrice = false;
             }
@@ -97,27 +103,20 @@ public class AdDetailsPage extends BrowsingPage
 
     private void exportAttributes(Hashtable<String, String> attributes)
     {
-        ElementsCollection attributeKeys = $$("#viewad-details .attributelist--key").shouldHave(sizeGreaterThanOrEqual(2));
-        ElementsCollection attributeValues = $$("#viewad-details .attributelist--value").shouldHave(sizeGreaterThanOrEqual(2));
+        ElementsCollection attributeKeys = $$("#viewad-details .addetailslist--detail");
+        ElementsCollection attributeValues = $$("#viewad-details .addetailslist--detail--value");
         
-        // Ads with only two attributes are currently in processing (still missing creation date)
-        // We will ignore such ads here and only handle complete ads with 3+ attributes
-        
-        if(attributeKeys.size() > 2)
+        for (int i = 0; i < (attributeKeys.size()-1); i++)
         {
-            // Attributes with index 0-2 are location, creation date and ad id and will be ignored here
-            for (int i = 3; i < attributeKeys.size(); i++)
-            {
-                String key = attributeKeys.get(i).text().trim().replace(":", "");
-                String value = attributeValues.get(i).find("span").text().trim();
-    
-                attributes.put(key, value);
-            }
+            String key = attributeKeys.get(i).text().split("\n")[0].trim();
+            String value = attributeValues.get(i).text().trim();
+            attributes.put(key, value);
         }
     }
 
     private void exportImages(String id, List<String> images)
     {
+
         // Some validation
         SelenideElement imageContainer = $("#viewad-lightbox").shouldBe(visible);
         ElementsCollection imageElements = imageContainer.findAll(".ad-image-wrapper .ad-image > img").shouldHave(CollectionCondition.sizeGreaterThan(0));
@@ -132,6 +131,7 @@ public class AdDetailsPage extends BrowsingPage
             imageElement.shouldHave(attribute("src"));
 
             String imageUrl = imageElement.getAttribute("src");
+
             try
             {
                 // Trigger download
@@ -145,8 +145,13 @@ public class AdDetailsPage extends BrowsingPage
 
                 // Rename loaded file to new filename
                 imageFile.renameTo(newFile);
-                
-                // Selenide will create a directory per image download which we will now remove 
+
+                // disable logging for download images
+                Logger l = Logger.getLogger("com");
+                l.setLevel(Level.OFF);
+                l.setUseParentHandlers(false);
+
+                // Selenide will create a directory per image download which we will now remove
                 File remainingDownloadDirectory = new File(imageFile.getPath().replace(imageFile.getName(), ""));
                 remainingDownloadDirectory.delete();
 

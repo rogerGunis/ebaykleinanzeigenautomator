@@ -1,23 +1,19 @@
 package de.unik.ebaykleinanzeigenautomator.pageobjects.pages;
 
-import static com.codeborne.selenide.Condition.attribute;
-import static com.codeborne.selenide.Condition.exist;
-import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.$;
+import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.SelenideElement;
+import de.unik.ebaykleinanzeigenautomator.datamodels.SmallAd;
+import de.unik.ebaykleinanzeigenautomator.datamodels.SmallAdContainer;
+import de.unik.ebaykleinanzeigenautomator.pageobjects.components.Pagination;
+import de.unik.ebaykleinanzeigenautomator.util.Context;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.apache.commons.lang3.StringUtils;
-
-import com.codeborne.selenide.Selenide;
-import com.codeborne.selenide.SelenideElement;
-
-import de.unik.ebaykleinanzeigenautomator.datamodels.SmallAd;
-import de.unik.ebaykleinanzeigenautomator.datamodels.SmallAdContainer;
-import de.unik.ebaykleinanzeigenautomator.pageobjects.components.Pagination;
-import de.unik.ebaykleinanzeigenautomator.util.Context;
+import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Selenide.$;
 
 public class ManagedAdsPage extends BrowsingPage
 {
@@ -302,7 +298,7 @@ public class ManagedAdsPage extends BrowsingPage
             deactivateSmallAd(smallAdElement);
         }
         
-        printElementOperationStatus(smallAdElement, "Exported", "");
+        printElementOperationStatus(smallAdElement, " ... done", "");
 
         return smallAd;
     }

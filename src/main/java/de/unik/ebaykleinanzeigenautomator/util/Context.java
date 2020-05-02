@@ -1,11 +1,11 @@
 package de.unik.ebaykleinanzeigenautomator.util;
 
+import de.unik.ebaykleinanzeigenautomator.datamodels.Account;
+import org.aeonbits.owner.ConfigFactory;
+import org.openqa.selenium.chrome.ChromeOptions;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.aeonbits.owner.ConfigFactory;
-
-import de.unik.ebaykleinanzeigenautomator.datamodels.Account;
 
 public class Context
 {
@@ -34,7 +34,14 @@ public class Context
             logger.setLevel(Level.OFF);
             logger.removeHandler(logger.getHandlers()[0]);
             logger.setUseParentHandlers(false);
-            
+
+            ChromeOptions options = new ChromeOptions();
+            options.addArguments(
+                    "--disable-logging",
+                    "--log-level=OFF",
+                    "--silent"
+            );
+
             // Disable chromedriver output
             if(get().getConfiguration().selenideBrowser().toLowerCase().equals("chrome"))
             {
