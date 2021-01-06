@@ -11,7 +11,7 @@ public class BrowsingPage extends PageObject
 
     public BrowsingPage()
     {
-        validateIsExpectedPage();
+//        validateIsExpectedPage();
     }
 
     @Override

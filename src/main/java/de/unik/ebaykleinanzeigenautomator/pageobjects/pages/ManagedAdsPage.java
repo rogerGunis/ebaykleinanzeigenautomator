@@ -83,7 +83,7 @@ public class ManagedAdsPage extends BrowsingPage
             SelenideElement currentSmallAdElement = getCurrentItemFromPage().scrollTo();
             
             // Get title
-            String title = currentSmallAdElement.find(".manageaditem-main .manageaditem-ad > h2 > a").shouldBe(visible).text();
+            String title = currentSmallAdElement.find(".manageaditem-main .manageaditem-ad > h2 > div > a").shouldBe(visible).text();
 
             // Check if we this matches the given small ad in title 
             if (smallAd.title.equals(title))
@@ -202,7 +202,7 @@ public class ManagedAdsPage extends BrowsingPage
     private void printElementOperationStatus(SelenideElement smallAdElement, String operation, String status)
     {
         // Get title
-        String title = smallAdElement.find(".manageaditem-main .manageaditem-ad > h2 > a").should(exist).text();
+        String title = smallAdElement.find(".manageaditem-main .manageaditem-ad > h2 > div > a").should(exist).text();
         
         // Print status
         System.out.println(operation + (operation.isEmpty() ? "" : " ") + title + (title.isEmpty() ? "" : " ") + status);
@@ -301,7 +301,7 @@ public class ManagedAdsPage extends BrowsingPage
         {
             deactivateSmallAd(smallAdElement);
         }
-        
+
         printElementOperationStatus(smallAdElement, "Exported", "");
 
         return smallAd;
@@ -310,7 +310,7 @@ public class ManagedAdsPage extends BrowsingPage
     private void exportSmallAdDetails(SelenideElement smallAdElement, SmallAd smallAd)
     {
         // Open ad detail page
-        smallAdElement.$("section.manageaditem-ad > h2 > a").should(exist).scrollTo().shouldBe(visible).click();
+        smallAdElement.$("section.manageaditem-ad > h2 > div > a").should(exist).scrollTo().shouldBe(visible).click();
 
         // Create small ad detail page and export details
         new AdDetailsPage().exportAdDetails(smallAd);

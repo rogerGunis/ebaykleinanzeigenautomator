@@ -6,6 +6,8 @@ import java.util.logging.Logger;
 import org.aeonbits.owner.ConfigFactory;
 
 import de.unik.ebaykleinanzeigenautomator.datamodels.Account;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class Context
 {
@@ -60,11 +62,14 @@ public class Context
 
     private void initializeSelenide()
     {
+        // disable selenium detection
+        com.codeborne.selenide.Configuration.browserCapabilities = getDesiredCapabilitiesForChrome();
+
         // The browser
         com.codeborne.selenide.Configuration.browser = configuration.selenideBrowser();
 
         // Headless mode
-        com.codeborne.selenide.Configuration.headless = configuration.selenideHeadless();
+        com.codeborne.selenide.Configuration.headless = false;
 
         // Hold browser open
         com.codeborne.selenide.Configuration.holdBrowserOpen = configuration.selenideHoldBrowserOpen();
@@ -89,6 +94,17 @@ public class Context
 
         // Tests will fail after x milliseconds if the given condition does not match
         com.codeborne.selenide.Configuration.timeout = configuration.selenideTimeout();
+    }
+
+    private DesiredCapabilities getDesiredCapabilitiesForChrome() {
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--disable-extensions");
+        options.addArguments("--disable-blink-features=AutomationControlled");
+        options.addArguments("--window-size=1920,1080");
+
+        DesiredCapabilities capabilities = new DesiredCapabilities();
+        capabilities.setCapability(ChromeOptions.CAPABILITY, options);
+        return capabilities;
     }
 
     public Configuration getConfiguration()

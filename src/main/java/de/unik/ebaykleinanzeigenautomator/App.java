@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 
+import de.unik.ebaykleinanzeigenautomator.util.Configuration;
 import org.apache.commons.lang3.StringUtils;
 
 import de.unik.ebaykleinanzeigenautomator.datamodels.SmallAdContainer;
@@ -21,18 +22,20 @@ import de.unik.ebaykleinanzeigenautomator.util.Context;
 public class App
 {
     private static final String INPUT_OUTPUT_ERROR = "An input/output error occured while trying to read from your input device.";
-    
+
     private static final String INVALID_INPUT_ERROR = "Please choose between options 0 - B. Enter the character of the option you want. No other inputs are allowed.";
 
     private static final String COMMANDLINE_PARAMETER_SESSION = "-session=";
-    
+
     private boolean exit = false;
+    private final String outputPath;
 
     public App()
     {
         Context.initialize();
+        outputPath = Context.get().getWorkingFilePath();
     }
-    
+
     public void processCommandLineParameter(String parameter)
     {
         if(parameter.toLowerCase().startsWith(COMMANDLINE_PARAMETER_SESSION))
@@ -40,14 +43,14 @@ public class App
         	handleSessionIdentifierReset(parameter.replaceAll(COMMANDLINE_PARAMETER_SESSION, "").trim());
         }
     }
-    
+
     public void printTitle()
     {
     	System.out.println("");
         System.out.println("Ebay Kleinanzeigen Automator");
         System.out.println("----------------------------");
     }
-    
+
     private void printSessionIdentifier()
     {
     	if(Context.get().isValidSession())
@@ -64,7 +67,7 @@ public class App
 
         System.out.println("");
         System.out.println("1) Set account credentials");
-        System.out.println("2) Export all existing small ads from the site to your harddisk in a new directory");
+        System.out.println("2) Export all existing small ads from the site to the local directory ("+outputPath+")");
         System.out.println("3) Activate all small ads at the site");
         System.out.println("4) Deactivate all small ads at the site");
         System.out.println("5) Delete inactive small ads at the site");
@@ -81,7 +84,7 @@ public class App
     private String readInput(boolean isPassword)
     {
     	String inputString = null;
-    	
+
         if(!Context.get().getConfiguration().systemConsoleInput())
         {
         	try
@@ -114,35 +117,35 @@ public class App
                 System.out.println("Error was: " + ioe.toString());
             }
         }
-        
+
         return inputString;
     }
-    
+
     private boolean handleSessionIdentifierReset(String sessionIdentifier)
     {
         if(!StringUtils.isBlank(sessionIdentifier) && Files.exists(new File(Context.get().getWorkingFilePath(sessionIdentifier)).toPath()))
         {
             Context.get().resetSessionIdentifier(sessionIdentifier);
-        	
+
         	return true;
         }
         else
         {
         	System.out.println("\nDirectory for session identifier '" + sessionIdentifier + "' was not found, is invalid or did not contain a data file. Make sure your data is located at ./data/" + sessionIdentifier + ".");
-        	
+
         	if(Context.get().isValidSession())
         	{
         		System.out.println("Keeping previous session identifier.");
         	}
-        	
+
         	return false;
         }
     }
-    
+
     private boolean handleReadCredentials()
     {
     	System.out.println("\nSetting and verifying credentials\n");
-    	
+
         System.out.println("The following inputs will not be saved to harddisk.\n");
 
         System.out.print("Please enter your username (email) for ebay-kleinanzeigen.de and press enter: ");
@@ -150,12 +153,12 @@ public class App
 
         System.out.print("Please enter your password for ebay-kleinanzeigen.de and press enter: ");
         String password = readInput(true);
-        
+
         System.out.println("");
 
         // Set the credentials to our account
         Context.get().setAccount(username, password);
-        
+
         // Verify the account by trying to login
         return new LoginLogoutFlow().run();
     }
@@ -165,7 +168,7 @@ public class App
         switch (input.toLowerCase())
         {
             case "1":
-            {	
+            {
                 if(!handleReadCredentials())
                 {
                 	return;
@@ -174,7 +177,7 @@ public class App
             break;
             case "2":
             {
-                System.out.println("\nExporting small ads\n");
+                System.out.println("\nExporting small ads: "+outputPath+"\n");
 
                 // Always (re)set the session identifier on each new export
                 // Avoids overwriting existing data and ensures that we always work on newest data export
@@ -185,8 +188,8 @@ public class App
                 {
                     return;
                 }
-                
-                if (!exportFlow.getSmallAdContainer().writeToDisk(Context.get().getWorkingFilePath()))
+
+                if (!exportFlow.getSmallAdContainer().writeToDisk(outputPath))
                 {
                     return;
                 }
@@ -235,15 +238,15 @@ public class App
             case "7":
             {
                 System.out.println("\nImporting active small ads\n");
-                
+
                 if(!Context.get().isValidSession())
                 {
                 	System.out.println("Nothing to import. Be sure to export first.");
                 	return;
                 }
-                
+
                 SmallAdContainer smallAdContainer = new SmallAdContainer();
-                if (!smallAdContainer.readFromDisk(Context.get().getWorkingFilePath()))
+                if (!smallAdContainer.readFromDisk(outputPath))
                 {
                     return;
                 }
@@ -257,7 +260,7 @@ public class App
             case "8":
             {
                 System.out.println("\nImporting active and not yet existing small ads\n");
-                
+
                 if(!Context.get().isValidSession())
                 {
                 	System.out.println("Nothing to import. Be sure to export first.");
@@ -265,7 +268,7 @@ public class App
                 }
 
                 SmallAdContainer smallAdContainer = new SmallAdContainer();
-                if (!smallAdContainer.readFromDisk(Context.get().getWorkingFilePath()))
+                if (!smallAdContainer.readFromDisk(outputPath))
                 {
                     return;
                 }
@@ -279,7 +282,7 @@ public class App
             case "9":
             {
                 System.out.println("\nImporting all small ads\n");
-                
+
                 if(!Context.get().isValidSession())
                 {
                 	System.out.println("Nothing to import. Be sure to export first.");
@@ -287,7 +290,7 @@ public class App
                 }
 
                 SmallAdContainer smallAdContainer = new SmallAdContainer();
-                if (!smallAdContainer.readFromDisk(Context.get().getWorkingFilePath()))
+                if (!smallAdContainer.readFromDisk(outputPath))
                 {
                     return;
                 }
@@ -301,7 +304,7 @@ public class App
             case "a":
             {
             	System.out.println("\nQuerying all small ads\n");
-            	
+
             	QuerySmallAdsFlow queryFlow = new QuerySmallAdsFlow();
                 if (!queryFlow.run())
                 {
@@ -312,7 +315,7 @@ public class App
             case "b":
             {
             	System.out.print("\nPlease enter the session identifier: ");
-            	
+
             	if(!handleSessionIdentifierReset(readInput(false)))
             	{
             		return;
@@ -334,7 +337,7 @@ public class App
 
         System.out.println("\nEverything ok");
     }
-    
+
     public void runMainLoop()
     {
         do
@@ -349,19 +352,19 @@ public class App
     {
     	// Create the application
     	App app = new App();
-    	
+
     	// Print the title if we do not go directly to the main loop
     	if(!Context.get().getConfiguration().credentialsFromConfiguration() || args.length > 0)
     	{
     		app.printTitle();
     	}
-    	
+
     	// Interpret command line parameters
         for(int i=0; i<args.length; i++)
         {
             app.processCommandLineParameter(args[i]);
         }
-    	
+
         // Read initial credentials
         if(!Context.get().getConfiguration().credentialsFromConfiguration())
         {

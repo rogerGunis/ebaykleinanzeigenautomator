@@ -22,7 +22,7 @@ public class Header extends Component
     @Override
     public void validateComponentIsAvailable()
     {
-        $("#site-header-top").should(exist);
+        $("#site-header").should(exist);
     }
 
     public Homepage clickHome()
